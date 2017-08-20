@@ -1,0 +1,48 @@
+page-contact,
+page-home {
+  ion-card {
+    ion-avatar[item-end] {
+      margin-left: 0;
+      min-width: 20px;
+
+      ion-icon.state {
+        color: #ccc;
+        font-size: 0.8em;
+        margin-top: -3px;
+        text-align: right;
+        width: 100%;
+      }
+    }
+
+    ion-avatar[item-start] {
+      margin-right: 8px !important;
+    }
+
+    ion-icon.trend {
+      font-size: 2.6em;
+      margin-top: -3px;
+      text-align: center;
+      width: 100%;
+
+      &.down {
+        color: color($colors, danger, base);
+      }
+
+      &.equal {
+        color: #ccc;
+      }
+
+      &.up {
+        color: color($colors, secondary, base);
+      }
+    }
+
+    &.quote {
+      ion-card-content {
+        .quantity {
+          color: #666;
+        }
+      }
+    }
+  }
+}

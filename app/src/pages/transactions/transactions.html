@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Transactions
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-card *ngFor="let transaction of transactions">
+      <ion-item>
+        <ion-avatar item-start>
+          <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.Transaction === 'Buy'"></ion-icon>
+          <ion-icon name="add" class="transaction dividend" *ngIf="transaction.Transaction === 'Dividend'"></ion-icon>
+          <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.Transaction === 'Sell'"></ion-icon>
+        </ion-avatar>
+        <h1>{{transaction.Symbol}}</h1>
+      </ion-item>
+
+      <ion-card-content>
+        <ion-row>
+          <ion-col>
+            <p>{{transaction.Date}}</p>
+          </ion-col>
+          <ion-col>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

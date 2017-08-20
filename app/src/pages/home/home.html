@@ -1,0 +1,80 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Performance
+    </ion-title>
+  </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-segment [(ngModel)]="mode">
+      <ion-segment-button value="today">
+        Today
+      </ion-segment-button>
+      <ion-segment-button value="allTime">
+        All Time
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list *ngIf="volume">
+    <ion-card class="volume">
+      <ion-item>
+        <ion-avatar item-start>
+          <ion-icon name="arrow-dropright-circle" class="trend equal" *ngIf="volume.price[mode].performancePercent < TREND_EQUAL_THRESHOLD && volume.price[mode].performancePercent > -TREND_EQUAL_THRESHOLD"></ion-icon>
+          <ion-icon name="arrow-dropup-circle" class="trend up" *ngIf="volume.price[mode].performancePercent >= TREND_EQUAL_THRESHOLD"></ion-icon>
+          <ion-icon name="arrow-dropdown-circle" class="trend down" *ngIf="volume.price[mode].performancePercent <= -TREND_EQUAL_THRESHOLD"></ion-icon>
+        </ion-avatar>
+        <h2>TOTAL</h2>
+        <p>TK</p>
+      </ion-item>
+
+      <ion-card-content>
+        <ion-row>
+          <ion-col>
+            <h1>{{volume.price[mode].price | currency:volume.currency}}</h1>
+          </ion-col>
+          <ion-col>
+            <div class="text-right">
+              <span *ngIf="volume.price[mode].performance > 0">+</span>{{volume.price[mode].performance | number: '1.2-2'}}{{volume.currency}}<br />
+              <span *ngIf="volume.price[mode].performancePercent > 0">+</span>{{volume.price[mode].performancePercent | percent: '1.2-2'}}
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+    <ion-card *ngFor="let quote of quotes" class="quote">
+      <ion-item>
+        <ion-avatar item-start>
+          <ion-icon name="arrow-dropright-circle" class="trend equal" *ngIf="quote.price[mode].regularMarketChangePercent < TREND_EQUAL_THRESHOLD && quote.price[mode].regularMarketChangePercent > -TREND_EQUAL_THRESHOLD"></ion-icon>
+          <ion-icon name="arrow-dropup-circle" class="trend up" *ngIf="quote.price[mode].regularMarketChangePercent >= TREND_EQUAL_THRESHOLD"></ion-icon>
+          <ion-icon name="arrow-dropdown-circle" class="trend down" *ngIf="quote.price[mode].regularMarketChangePercent <= -TREND_EQUAL_THRESHOLD"></ion-icon>
+        </ion-avatar>
+        <ion-avatar item-end>
+          <ion-icon name="play" class="state" *ngIf="quote.marketState === 'REGULAR'"></ion-icon>
+          <ion-icon name="pause" class="state" *ngIf="quote.marketState !== 'REGULAR'"></ion-icon>
+        </ion-avatar>
+        <h2>{{quote.name}}</h2>
+        <p>{{quote.symbol + ':' + quote.exchangeName}}</p>
+      </ion-item>
+
+      <ion-card-content>
+        <ion-row>
+          <ion-col>
+            <h1>{{quote.price[mode].regularMarketPrice | currency:quote.currency}}</h1>
+            <div class="quantity">
+              {{quote.quantity | number: '1.0-3'}} × {{quote.averagePrice | number: '1.2-2'}}{{quote.currency}}
+            </div>
+          </ion-col>
+          <ion-col>
+            <div class="text-right">
+              <span *ngIf="quote.price[mode].regularMarketChange > 0">+</span>{{quote.price[mode].regularMarketChange | number: '1.2-2'}}{{quote.currency}}<br />
+              <span *ngIf="quote.price[mode].regularMarketChangePercent > 0">+</span>{{quote.price[mode].regularMarketChangePercent | percent: '1.2-2'}}
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+</ion-content>

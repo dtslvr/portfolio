@@ -1,0 +1,24 @@
+page-transactions {
+  ion-avatar[item-start] {
+    margin-right: 8px !important;
+  }
+
+  ion-icon.transaction {
+    font-size: 1.6em;
+    line-height: 40px;
+    text-align: center;
+    width: 100%;
+
+    &.buy {
+      color: color($colors, secondary, base);
+    }
+
+    &.dividend {
+      color: #ccc;
+    }
+
+    &.sell {
+      color: color($colors, danger, base);
+    }
+  }
+}

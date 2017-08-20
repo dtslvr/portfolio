@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      Portfolio Shares
+    </ion-title>
+  </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-segment [(ngModel)]="mode">
+      <ion-segment-button value="Today">
+        Today
+      </ion-segment-button>
+      <ion-segment-button value="Acquisition">
+        Acquisition
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <canvas #doughnutCanvasAcquisition [hidden]="mode!=='Acquisition'"></canvas>
+  <canvas #doughnutCanvasToday [hidden]="mode!=='Today'"></canvas>
+</ion-content>
