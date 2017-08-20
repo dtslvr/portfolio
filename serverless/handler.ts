@@ -1,13 +1,13 @@
 'use strict';
 
-const exchangeRateDataService = require('./service/exchange-rate-data-service');
-const moment = require('moment');
-const portfolioService = require('./service/portfolio-service');
-const transactionImporter = require('./service/transaction-importer');
-const yahooFinance = require('yahoo-finance');
+import { exchangeRateDataService } from './service/exchange-rate-data-service';
+import * as moment from 'moment';
+import { portfolioService } from './service/portfolio-service';
+import { transactionImporter } from './service/transaction-importer';
+import * as yahooFinance from 'yahoo-finance';
 
 
-module.exports.portfolio = (event, context, callback) => {
+export async function portfolio(event, context, callback) {
   const currentDate = moment();
 
   exchangeRateDataService.loadCurrencies().then(() => {
@@ -27,6 +27,6 @@ module.exports.portfolio = (event, context, callback) => {
   });
 };
 
-module.exports.transactions = (event, context, callback) => {
+export async function transactions(event, context, callback) {
   callback(null, transactionImporter.getTransactions());
 };
