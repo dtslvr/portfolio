@@ -20,10 +20,25 @@ export async function portfolio(event, context, callback) {
         modules: ['price']
       }).then((result) => {
         callback(null, portfolioService.getResponse(portfolio, result));
+      }).catch((error) => {
+        // callback(new Error(`[500] ${error}`));
+        return;
       });
     } else {
       callback(null, portfolioService.getEmptyResponse());
     }
+  }).catch((error) => {
+    // callback(new Error(`[500] ${error}`));
+    callback(null, {
+      statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        message: error
+      }
+    });
+    return;
   });
 };
 

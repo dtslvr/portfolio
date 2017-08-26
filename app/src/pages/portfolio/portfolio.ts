@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
-import { NavController } from 'ionic-angular';
+import { LoadingController, NavController, ToastController } from 'ionic-angular';
 import { PortfolioServiceProvider } from '../../providers/portfolio-service/portfolio-service';
 
 @Component({
@@ -17,13 +17,28 @@ export class PortfolioPage {
   public mode = 'Today';
 
   constructor(
+    public loadingCtrl: LoadingController,
     public navCtrl: NavController,
-    public portfolioService: PortfolioServiceProvider,) {
+    public portfolioService: PortfolioServiceProvider,
+    public toastCtrl: ToastController) {
   }
 
   ionViewDidLoad() {
+  }
+
+  ionViewDidEnter() {
+    this.loadPortfolio();
+  }
+
+  private loadPortfolio() {
+    let loading = this.loadingCtrl.create({
+      cssClass: 'clear'
+    });
+
+    loading.present();
+
     this.portfolioService.load()
-    .then(data => {
+    .then((data) => {
       const symbols = data.quotes.map((obj) => {
         return obj.symbol;
       });
@@ -34,12 +49,24 @@ export class PortfolioPage {
         return obj.portfolioShareToday;
       });
 
+      loading.dismiss();
+
       this.doughnutChartAcquisition = this.getChart(this.doughnutCanvasAcquisition.nativeElement, symbols, portfolioSharesAcquisition);
       this.doughnutChartToday = this.getChart(this.doughnutCanvasToday.nativeElement, symbols, portfolioSharesToday);
+    })
+    .catch((error) => {
+      let toast = this.toastCtrl.create({
+        message: `Error: ${error.message}`,
+        duration: 3000,
+        position: 'bottom'
+      });
+      toast.present();
+
+      loading.dismiss();
     });
   }
 
-  getChart(element, symbols, data) {
+  private getChart(element, symbols, data) {
     return new Chart(element, {
       type: 'doughnut',
       data: {

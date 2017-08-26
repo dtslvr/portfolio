@@ -4,11 +4,15 @@
       Transactions
     </ion-title>
   </ion-navbar>
+
+  <ion-toolbar>
+    <ion-searchbar placeholder="Filter transactions..." (ionInput)="filterItems($event)"></ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
-    <ion-card *ngFor="let transaction of transactions">
+    <ion-card *ngFor="let transaction of visibleTransactions">
       <ion-item>
         <ion-avatar item-start>
           <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.Transaction === 'Buy'"></ion-icon>

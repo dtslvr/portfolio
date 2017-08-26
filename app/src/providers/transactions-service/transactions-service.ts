@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Http } from '@angular/http';
+import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import 'rxjs/add/operator/map';
 
 /*
@@ -13,9 +14,15 @@ export class TransactionsServiceProvider {
   private backendUri: string;
   private data: any;
 
-  constructor(public http: Http) {
-    this.backendUri = 'http://localhost:3000';
-    // this.backendUri = 'https://a4z09td8id.execute-api.us-east-1.amazonaws.com/dev';
+  constructor(
+    @Inject(APP_CONFIG) private config: IAppConfig,
+    public http: Http
+  ) {
+    if (this.config.develMode) {
+      this.backendUri = 'http://localhost:3000';
+    } else {
+      this.backendUri = this.config.backendUri;
+    }
   }
 
   load() {

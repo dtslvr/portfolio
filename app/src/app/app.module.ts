@@ -3,8 +3,9 @@ import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
+import { APP_CONFIG, AppConfig } from './app.config';
 
-import { HomePage } from '../pages/home/home';
+import { PerformancePage } from '../pages/performance/performance';
 import { PortfolioPage } from '../pages/portfolio/portfolio';
 import { TabsPage } from '../pages/tabs/tabs';
 import { TransactionsPage } from '../pages/transactions/transactions';
@@ -17,7 +18,7 @@ import { TransactionsServiceProvider } from '../providers/transactions-service/t
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
+    PerformancePage,
     PortfolioPage,
     TabsPage,
     TransactionsPage
@@ -30,7 +31,7 @@ import { TransactionsServiceProvider } from '../providers/transactions-service/t
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
+    PerformancePage,
     PortfolioPage,
     TabsPage,
     TransactionsPage
@@ -38,6 +39,10 @@ import { TransactionsServiceProvider } from '../providers/transactions-service/t
   providers: [
     StatusBar,
     SplashScreen,
+    {
+      provide: APP_CONFIG,
+      useValue: AppConfig
+    },
     {
       provide: ErrorHandler,
       useClass: IonicErrorHandler

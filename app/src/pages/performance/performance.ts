@@ -3,11 +3,11 @@ import { LoadingController, NavController, ToastController } from 'ionic-angular
 import { PortfolioServiceProvider } from '../../providers/portfolio-service/portfolio-service';
 
 @Component({
-  selector: 'page-home',
-  templateUrl: 'home.html',
+  selector: 'page-performance',
+  templateUrl: 'performance.html',
   providers: [PortfolioServiceProvider]
 })
-export class HomePage {
+export class PerformancePage {
 
   public TREND_EQUAL_THRESHOLD = 0.001; // 0.1%
 
@@ -37,12 +37,14 @@ export class HomePage {
           toast.present();
         }
       });
-
-    this.loadPortfolio();
   }
 
-  loadPortfolio() {
-    let loading = this.loadingCtrl.create({
+  ionViewDidEnter() {
+    this.loadPerformance();
+  }
+
+  private loadPerformance() {
+    const loading = this.loadingCtrl.create({
       cssClass: 'clear'
     });
 
@@ -52,6 +54,16 @@ export class HomePage {
     .then(data => {
       this.quotes = data.quotes;
       this.volume = data.volume;
+
+      loading.dismiss();
+    })
+    .catch((error) => {
+      const toast = this.toastCtrl.create({
+        message: `Error: ${error.message}`,
+        duration: 3000,
+        position: 'bottom'
+      });
+      toast.present();
 
       loading.dismiss();
     });
