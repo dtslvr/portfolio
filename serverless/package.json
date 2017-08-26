@@ -19,7 +19,6 @@
     "moment": "2.18.1",
     "papaparse": "4.3.3",
     "path": "0.12.7",
-    "request": "2.81.0",
     "yahoo-finance": "git+https://github.com/pilwon/node-yahoo-finance.git#pull/42/head"
   }
 }
