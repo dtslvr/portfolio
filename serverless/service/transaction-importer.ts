@@ -1,19 +1,23 @@
+import { coinbaseImporter } from './importer/coinbase/coinbase-importer';
 import * as fs from 'fs';
 import { helper } from './helper';
-import * as _ from 'lodash';
+import { ITransaction } from './interfaces/interfaces';
+import { concat, last, sortBy } from 'lodash';
 import * as moment from 'moment';
 import * as Papa from 'papaparse';
 import * as path from 'path';
+import { postfinanceImporter } from './importer/postfinance/postfinance-importer';
 
 class TransactionImporter {
 
   public getPortfolio(aDate) {
     let portfolio = {};
-    const transactions = this.getRawTransactions();
+    const transactions: ITransaction[] = this.getAllTransactions();
     let currentPrice;
 
     transactions.forEach((transaction: any) => {
-      if (transaction.Date && transaction.Date.length > 0 && moment(transaction.Date, 'DD-MM-YYYY HH:mm:ss').isBefore(aDate)) {
+      if (transaction.Date && transaction.Date.length > 0 &&
+        moment(transaction.Date, 'DD-MM-YYYY HH:mm:ss').isBefore(aDate)) {
         if (transaction.Symbol && !portfolio[transaction.Symbol]) {
           portfolio[transaction.Symbol] = {
             quantity: 0,
@@ -35,7 +39,7 @@ class TransactionImporter {
             portfolio[transaction.Symbol].prices.push(currentPrice);
           } else {
             // Store current prize to add in next round
-            currentPrice = _.last(portfolio[transaction.Symbol].prices);
+            currentPrice = last(portfolio[transaction.Symbol].prices);
 
             portfolio[transaction.Symbol].quantity += parseFloat(transaction.Quantity);
             portfolio[transaction.Symbol].quantities.push(parseFloat(transaction.Quantity));
@@ -69,7 +73,7 @@ class TransactionImporter {
     return {
       statusCode: 200,
       headers: helper.getCORSHeaders(),
-      body: JSON.stringify(this.getRawTransactions())
+      body: JSON.stringify(this.getAllTransactions())
     };
   }
 
@@ -97,62 +101,26 @@ class TransactionImporter {
     return portfolioYahoo;
   }
 
-  private getRawTransactions() {
-    let filePaths: string[] = [];
+  private getAllTransactions() {
+    let filePathsPostfinance: string[] = [];
     let filePathsCoinbase: string[] = [];
-    let transactions = [];
+    let transactions: ITransaction[] = [];
 
     fs.readdirSync(path.join(__dirname, '..', 'data')).forEach((filePath) => {
-      if (filePath.includes('.csv')) {
-        if (filePath.includes('Coinbase')) {
-          filePathsCoinbase.push(filePath);
-        } else {
-          filePaths.push(filePath);
-        }
+      if (coinbaseImporter.isValid(filePath)) {
+        filePathsCoinbase.push(filePath);
+      } else if (postfinanceImporter.isValid(filePath)) {
+        filePathsPostfinance.push(filePath);
       }
     });
 
-    filePaths.forEach((filePath) => {
-      // Parse local CSV file
-      const file = fs.readFileSync(path.join(__dirname, '..', 'data', filePath), 'utf8');
-      Papa.parse(file, {
-        header: true,
-        complete: function(results) {
-          transactions = _.concat(transactions, results.data);
-        }
-      });
-    });
-
-    filePathsCoinbase.forEach((filePathCoinbase) => {
-      // Parse local CSV file
-      const file = fs.readFileSync(path.join(__dirname, '..', 'data', filePathCoinbase), 'utf8');
-      Papa.parse(file, {
-        header: false,
-        complete: function(results) {
-          const currency = results.data[5][8];
-          const date = results.data[5][0];
-          const fee = results.data[5][9];
-          const price = results.data[5][7];
-          const quantity = results.data[5][2];
-          const transactionType = results.data[5][5].includes('Bought') ? 'Buy' : 'Sell';
-          const symbol = results.data[2][1].substring(0, 3);
-
-          const transaction = {
-            Currency: currency,
-            Date: moment(date).format('DD-MM-YYYY 00:00:00'),
-            Quantity: quantity.toString(),
-            Symbol: symbol,
-            Transaction: transactionType,
-            'Unit price': ((price - fee) / quantity).toString()
-          };
-
-          transactions = _.concat(transactions, transaction);
-        }
-      });
-    });
+    transactions = concat(transactions, coinbaseImporter.getTransactions(filePathsCoinbase));
+    transactions = concat(transactions, postfinanceImporter.getTransactions(filePathsPostfinance));
 
     // sort transactions by date asc
-    transactions = _.sortBy(transactions, (transaction) => { return moment(transaction.Date, 'DD-MM-YYYY HH:mm:ss'); });
+    transactions = sortBy(transactions, (transaction) => {
+      return moment(transaction.Date, 'DD-MM-YYYY HH:mm:ss');
+    });
 
     return transactions;
   }

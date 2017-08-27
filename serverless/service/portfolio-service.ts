@@ -1,6 +1,6 @@
 import { exchangeRateDataService } from './exchange-rate-data-service';
 import { helper } from './helper';
-import * as _ from 'lodash';
+import { find } from 'lodash';
 
 class PortfolioService {
   public getEmptyResponse() {
@@ -65,7 +65,7 @@ class PortfolioService {
 
     let volumePerformanceToday = 0;
     Object.keys(portfolio).map((key) => {
-      volumePerformanceToday += portfolio[key].quantity * _.find(quotes, {symbol: key}).price.today.regularMarketChange * exchangeRateDataService.getRateToBaseCurrency(_.find(quotes, {symbol: key}).price.today.currency);
+      volumePerformanceToday += portfolio[key].quantity * find(quotes, {symbol: key}).price.today.regularMarketChange * exchangeRateDataService.getRateToBaseCurrency(find(quotes, {symbol: key}).price.today.currency);
     });
 
     return {
