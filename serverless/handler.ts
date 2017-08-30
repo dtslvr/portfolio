@@ -8,10 +8,8 @@ import * as yahooFinance from 'yahoo-finance';
 
 
 export async function portfolio(event, context, callback) {
-  const currentDate = moment();
-
-  exchangeRateDataService.loadCurrencies().then(() => {
-    const portfolio = transactionImporter.getPortfolio(currentDate);
+  exchangeRateDataService.loadCurrencies().then(async () => {
+    const portfolio = await transactionImporter.getPortfolio(moment());
     const symbols = Object.keys(portfolio);
 
     if (symbols.length > 0) {
@@ -43,5 +41,5 @@ export async function portfolio(event, context, callback) {
 };
 
 export async function transactions(event, context, callback) {
-  callback(null, transactionImporter.getTransactions());
+  callback(null, await transactionImporter.getTransactions());
 };

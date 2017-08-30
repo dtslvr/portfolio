@@ -25,10 +25,13 @@
       <ion-card-content>
         <ion-row>
           <ion-col>
-            <p>{{transaction.Date}}</p>
+            <p>{{transaction.Date | date: 'short'}}</p>
           </ion-col>
           <ion-col>
-            <p class="text-right">{{transaction.Transaction}}</p>
+            <p class="text-right">
+              {{transaction.Transaction}}<br />
+              {{transaction.Quantity | number: '1.0-3'}} × {{transaction['Unit price'] | number: '1.2-2'}}{{transaction.Currency}}
+            </p>
           </ion-col>
         </ion-row>
       </ion-card-content>

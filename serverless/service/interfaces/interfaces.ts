@@ -1,8 +1,8 @@
 export interface ITransaction {
   Currency: string;
   Date: string;
-  Quantity: string;
+  Quantity: number;
   Symbol: string;
   Transaction: string;
-  'Unit price': string;
+  'Unit price': number;
 }
