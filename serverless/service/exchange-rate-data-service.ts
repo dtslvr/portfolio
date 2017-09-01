@@ -1,6 +1,7 @@
 import * as yahooFinance from 'yahoo-finance';
 
 class ExchangeRateDataService {
+
   private baseCurrency = 'CHF';
   private baseCurrencySymbol = 'CHF';
   private currencies = {};
@@ -44,6 +45,7 @@ class ExchangeRateDataService {
   public getBaseCurrencySymbol() {
     return this.baseCurrencySymbol;
   }
+
 }
 
 export const exchangeRateDataService = new ExchangeRateDataService();

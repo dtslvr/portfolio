@@ -3,6 +3,7 @@ import { helper } from './helper';
 import { find } from 'lodash';
 
 class PortfolioService {
+
   public getEmptyResponse() {
     return {
       statusCode: 200,
@@ -92,6 +93,7 @@ class PortfolioService {
       })
     };
   }
+
 }
 
 export const portfolioService = new PortfolioService();

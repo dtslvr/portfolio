@@ -1,19 +1,20 @@
 import { AbstractImporter } from '../abstract-importer';
 import * as fs from 'fs';
-import { ITransaction } from '../../interfaces/interfaces';
 import * as moment from 'moment';
 import * as Papa from 'papaparse';
 import * as path from 'path';
+import { Transaction } from '../../../type/transaction';
 
 class PostfinanceImporter extends AbstractImporter {
+
   public isValid(filePath: string) {
     return filePath.toLowerCase().includes('postfinance') &&
       filePath.toLowerCase().includes('csv');
   }
 
-  public parseFile(filePath): Promise<ITransaction[]> {
+  public parseFile(filePath): Promise<Transaction[]> {
     return new Promise((resolve, reject) => {
-      let transactions: ITransaction[] = [];
+      let transactions: Transaction[] = [];
 
       // Parse local CSV file
       const file = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'data', filePath), 'utf8');
@@ -30,14 +31,14 @@ class PostfinanceImporter extends AbstractImporter {
               const unitPrice = parseFloat(result['Unit price'].replace(/'/g,''));
 
               if (symbol) {
-                const transaction: ITransaction = {
-                  Currency: currency,
-                  Date: date.toISOString(),
-                  Quantity: quantity,
-                  Symbol: symbol,
-                  Transaction: transactionType,
-                  'Unit price': unitPrice
-                };
+                const transaction = new Transaction({
+                  currency: currency,
+                  date: date.toISOString(),
+                  quantity: quantity,
+                  symbol: symbol,
+                  type: transactionType,
+                  unitPrice: unitPrice
+                });
 
                 transactions.push(transaction);
               }
@@ -50,6 +51,7 @@ class PostfinanceImporter extends AbstractImporter {
       });
     });
   }
+
 }
 
 export const postfinanceImporter = new PostfinanceImporter();

@@ -1,19 +1,20 @@
 import { AbstractImporter } from '../abstract-importer';
 import * as fs from 'fs';
-import { ITransaction } from '../../interfaces/interfaces';
 import * as moment from 'moment';
 import * as Papa from 'papaparse';
 import * as path from 'path';
+import { Transaction } from '../../../type/transaction';
 
 class CoinbaseImporter extends AbstractImporter {
+
   public isValid(filePath: string) {
     return filePath.toLowerCase().includes('coinbase') &&
       filePath.toLowerCase().includes('csv');
   }
 
-  public parseFile(filePath): Promise<ITransaction[]> {
+  public parseFile(filePath): Promise<Transaction[]> {
     return new Promise((resolve, reject) => {
-      let transactions: ITransaction[] = [];
+      let transactions: Transaction[] = [];
 
       // Parse local CSV file
       const file = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'data', filePath), 'utf8');
@@ -35,14 +36,14 @@ class CoinbaseImporter extends AbstractImporter {
                 const transactionType = quantity > 0 ? 'Buy' : 'Sell';
                 const symbol = transaction[3];
 
-                const newTransaction: ITransaction = {
-                  Currency: currency,
-                  Date: date.toISOString(),
-                  Quantity: quantity,
-                  Symbol: symbol,
-                  Transaction: transactionType,
-                  'Unit price': ((price - fee) / quantity) || 0
-                };
+                const newTransaction = new Transaction({
+                  currency: currency,
+                  date: date.toISOString(),
+                  quantity: quantity,
+                  symbol: symbol,
+                  type: transactionType,
+                  unitPrice: ((price - fee) / quantity) || 0
+                });
 
                 transactions.push(newTransaction);
               }
@@ -56,6 +57,7 @@ class CoinbaseImporter extends AbstractImporter {
       });
     });
   }
+
 }
 
 export const coinbaseImporter = new CoinbaseImporter();

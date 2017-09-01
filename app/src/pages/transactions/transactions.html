@@ -15,22 +15,22 @@
     <ion-card *ngFor="let transaction of visibleTransactions">
       <ion-item>
         <ion-avatar item-start>
-          <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.Transaction === 'Buy'"></ion-icon>
-          <ion-icon name="add" class="transaction dividend" *ngIf="transaction.Transaction === 'Dividend'"></ion-icon>
-          <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.Transaction === 'Sell'"></ion-icon>
+          <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.type === 'Buy'"></ion-icon>
+          <ion-icon name="add" class="transaction dividend" *ngIf="transaction.type === 'Dividend'"></ion-icon>
+          <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.type === 'Sell'"></ion-icon>
         </ion-avatar>
-        <h1>{{transaction.Symbol}}</h1>
+        <h1>{{transaction.symbol}}</h1>
       </ion-item>
 
       <ion-card-content>
         <ion-row>
           <ion-col>
-            <p>{{transaction.Date | date: 'short'}}</p>
+            <p>{{transaction.date | date: 'short'}}</p>
           </ion-col>
           <ion-col>
             <p class="text-right">
-              {{transaction.Transaction}}<br />
-              {{transaction.Quantity | number: '1.0-3'}} × {{transaction['Unit price'] | number: '1.2-2'}}{{transaction.Currency}}
+              {{transaction.transaction}}<br />
+              {{transaction.quantity | number: '1.0-3'}} × {{transaction.unitPrice | number: '1.2-2'}}{{transaction.currency}}
             </p>
           </ion-col>
         </ion-row>

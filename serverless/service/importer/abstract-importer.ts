@@ -1,9 +1,10 @@
-import { ITransaction } from '../interfaces/interfaces';
 import { flattenDeep } from 'lodash';
+import { Transaction } from '../../type/transaction';
 
 export abstract class AbstractImporter {
-  public getTransactions(filePaths: string[]): Promise<ITransaction[]> {
-    let promises: Promise<ITransaction[]>[] = [];
+
+  public getTransactions(filePaths: string[]): Promise<Transaction[]> {
+    let promises: Promise<Transaction[]>[] = [];
 
     filePaths.forEach((filePath) => {
       promises.push(this.parseFile(filePath));
@@ -16,5 +17,5 @@ export abstract class AbstractImporter {
 
   public abstract isValid(filePath: string): boolean;
 
-  public abstract parseFile(filePath): Promise<ITransaction[]>;
+  public abstract parseFile(filePath): Promise<Transaction[]>;
 }
