@@ -6,24 +6,45 @@ import * as moment from 'moment';
 import * as Papa from 'papaparse';
 import * as path from 'path';
 import { postfinanceImporter } from './importer/postfinance/postfinance-importer';
+import { Transaction } from '../type/transaction';
 
 class TransactionImporter {
 
   public async getPortfolio(aDate) {
     return new Promise(async (resolve, reject) => {
       let portfolio = {};
+      const transactions: Transaction[] = await this.getAllTransactions();
       let currentPrice;
 
+      transactions.forEach((transaction: Transaction) => {
+        if (transaction.getDate() && transaction.getDate().length > 0 &&
+          moment(transaction.getDate()).isBefore(aDate)) {
+          if (transaction.getSymbol() && !portfolio[transaction.getSymbol()]) {
+            portfolio[transaction.getSymbol()] = {
               quantity: 0,
               quantities: [],
               prices: []
             };
           }
 
+          if (transaction.getType() === 'Buy' ||
+            transaction.getType() === 'Split') {
+            portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();
+            portfolio[transaction.getSymbol()].quantities.push(transaction.getQuantity());
+            portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
+          } else if (transaction.getType() === 'Corporate Action') {
             // Rename symbol (move old price to new symbol)
+            if (transaction.getQuantity() >= 0) {
+              portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();
+              portfolio[transaction.getSymbol()].quantities.push(transaction.getQuantity());
+              portfolio[transaction.getSymbol()].prices.push(currentPrice);
             } else {
               // Store current prize to add in next round
+              currentPrice = last(portfolio[transaction.getSymbol()].prices);
 
+              portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();
+              portfolio[transaction.getSymbol()].quantities.push(transaction.getQuantity());
+              portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
             }
           }
         }
@@ -46,7 +67,6 @@ class TransactionImporter {
         portfolio[key].averagePrice = (sum / total);
       }
 
-      // return portfolio;
       resolve(portfolio);
     });
   }
@@ -59,6 +79,7 @@ class TransactionImporter {
     };
   }
 
+  private convertPortfolioToYahoo(portfolio): any {
     const portfolioYahoo = {};
     const yahooSymbol = {
       '8GC': '8GC.F', // '8GC.DE'
@@ -82,8 +103,11 @@ class TransactionImporter {
     return portfolioYahoo;
   }
 
+  private async getAllTransactions(): Promise<Transaction[]> {
+    return new Promise<Transaction[]>(async (resolve, reject) => {
       let filePathsPostfinance: string[] = [];
       let filePathsCoinbase: string[] = [];
+      let transactions: Transaction[] = [];
 
       fs.readdirSync(path.join(__dirname, '..', 'data')).forEach((filePath) => {
         if (coinbaseImporter.isValid(filePath)) {
@@ -98,12 +122,13 @@ class TransactionImporter {
 
       // sort transactions by date asc
       transactions = sortBy(transactions, (transaction) => {
+        return moment(transaction.getDate()).format('YYYYMMDD');
       });
 
-      // return transactions;
       resolve(transactions);
     });
   }
+
 }
 
 export const transactionImporter = new TransactionImporter();
