@@ -1,30 +1,17 @@
+import { AbstractImporter } from '../abstract-importer';
 import * as fs from 'fs';
-import { concat, flattenDeep } from 'lodash';
-import { IImporter } from '../interfaces/interfaces';
 import { ITransaction } from '../../interfaces/interfaces';
 import * as moment from 'moment';
 import * as Papa from 'papaparse';
 import * as path from 'path';
 
-class CoinbaseImporter implements IImporter {
-  public getTransactions(filePaths: string[]): Promise<ITransaction[]> {
-    let promises: Promise<ITransaction[]>[] = [];
-
-    filePaths.forEach((filePath) => {
-      promises.push(this.parseFile(filePath));
-    });
-
-    return Promise.all(promises).then((transactions) => {
-      return flattenDeep(transactions);
-    });
-  }
-
+class CoinbaseImporter extends AbstractImporter {
   public isValid(filePath: string) {
     return filePath.toLowerCase().includes('coinbase') &&
       filePath.toLowerCase().includes('csv');
   }
 
-  private parseFile(filePath): Promise<ITransaction[]> {
+  public parseFile(filePath): Promise<ITransaction[]> {
     return new Promise((resolve, reject) => {
       let transactions: ITransaction[] = [];
 
