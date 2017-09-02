@@ -7,6 +7,7 @@ import * as Papa from 'papaparse';
 import * as path from 'path';
 import { postfinanceImporter } from './importer/postfinance/postfinance-importer';
 import { Transaction } from '../type/transaction';
+import { TransactionType } from '../type/transaction-type';
 
 class TransactionImporter {
 
@@ -27,12 +28,12 @@ class TransactionImporter {
             };
           }
 
-          if (transaction.getType() === 'Buy' ||
-            transaction.getType() === 'Split') {
+          if (transaction.getType() === TransactionType.Buy ||
+            transaction.getType() === TransactionType.Split) {
             portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();
             portfolio[transaction.getSymbol()].quantities.push(transaction.getQuantity());
             portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
-          } else if (transaction.getType() === 'Corporate Action') {
+          } else if (transaction.getType() === TransactionType.CorporateAction) {
             // Rename symbol (move old price to new symbol)
             if (transaction.getQuantity() >= 0) {
               portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();

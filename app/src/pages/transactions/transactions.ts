@@ -26,7 +26,8 @@ export class TransactionsPage {
     if (value && value.trim() !== '') {
       this.visibleTransactions = this.visibleTransactions.filter((item) => {
         try {
-          return item.Symbol.toLowerCase().includes(value.toLowerCase());
+          return item.symbol.toLowerCase().includes(value.toLowerCase()) ||
+            item.type.toLowerCase().includes(value.toLowerCase())
         } catch(err) {
           return false;
         }

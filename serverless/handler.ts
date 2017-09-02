@@ -19,6 +19,7 @@ export async function portfolio(event, context, callback) {
       }).then((result) => {
         callback(null, portfolioService.getResponse(portfolio, result));
       }).catch((error) => {
+        console.log(error);
         // callback(new Error(`[500] ${error}`));
         return;
       });
@@ -26,6 +27,7 @@ export async function portfolio(event, context, callback) {
       callback(null, portfolioService.getEmptyResponse());
     }
   }).catch((error) => {
+    console.log(error);
     // callback(new Error(`[500] ${error}`));
     callback(null, {
       statusCode: 500,

@@ -9,6 +9,7 @@ page-transactions {
     text-align: center;
     width: 100%;
 
+    &.bonus,
     &.buy {
       color: color($colors, secondary, base);
     }

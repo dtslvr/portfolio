@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import * as Papa from 'papaparse';
 import * as path from 'path';
 import { Transaction } from '../../../type/transaction';
+import { TransactionType } from '../../../type/transaction-type';
 
 class PostfinanceImporter extends AbstractImporter {
 
@@ -26,11 +27,22 @@ class PostfinanceImporter extends AbstractImporter {
               const currency = result.Currency;
               const date = moment(result.Date, 'DD-MM-YYYY HH:mm:ss');
               const quantity = parseFloat(result.Quantity.replace(/'/g,''));
-              const transactionType = result.Transaction;
+
+              let transactionType;
+              if (result.Transaction === 'Corporate Action') {
+                transactionType = TransactionType.CorporateAction;
+              } else if (result.Transaction === 'Buy') {
+                transactionType = TransactionType.Buy;
+              } else if (result.Transaction === 'Sell') {
+                transactionType = TransactionType.Sell;
+              } else if (result.Transaction === 'Split') {
+                transactionType = TransactionType.Split;
+              }
+
               const symbol = result.Symbol;
               const unitPrice = parseFloat(result['Unit price'].replace(/'/g,''));
 
-              if (symbol) {
+              if (symbol && transactionType) {
                 const transaction = new Transaction({
                   currency: currency,
                   date: date.toISOString(),
@@ -42,7 +54,7 @@ class PostfinanceImporter extends AbstractImporter {
 
                 transactions.push(transaction);
               }
-            } catch(err) {
+            } catch(error) {
             }
           });
 

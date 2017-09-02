@@ -1,4 +1,5 @@
 import { ITransaction } from '../service/interfaces/interfaces';
+import { TransactionType } from './transaction-type';
 
 export class Transaction {
 
@@ -6,7 +7,7 @@ export class Transaction {
   private date: string;
   private quantity: number;
   private symbol: string;
-  private type: string;
+  private type: TransactionType;
   private unitPrice: number;
 
   constructor(data: ITransaction) {

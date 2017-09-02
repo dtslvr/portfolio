@@ -4,6 +4,7 @@ import * as moment from 'moment';
 import * as Papa from 'papaparse';
 import * as path from 'path';
 import { Transaction } from '../../../type/transaction';
+import { TransactionType } from '../../../type/transaction-type';
 
 class CoinbaseImporter extends AbstractImporter {
 
@@ -33,19 +34,31 @@ class CoinbaseImporter extends AbstractImporter {
                 const fee = parseFloat(transaction[9]);
                 const price = parseFloat(transaction[7]);
                 const quantity = parseFloat(transaction[2]);
-                const transactionType = quantity > 0 ? 'Buy' : 'Sell';
+
+                let transactionType;
+                const note = transaction[5];
+                if (note.includes('Bought')) {
+                  transactionType = TransactionType.Buy;
+                } else if (note.includes('Sold')) {
+                  transactionType = TransactionType.Sell;
+                } else if (note.includes('Congrats')) {
+                  transactionType = TransactionType.Bonus;
+                }
+
                 const symbol = transaction[3];
 
-                const newTransaction = new Transaction({
-                  currency: currency,
-                  date: date.toISOString(),
-                  quantity: quantity,
-                  symbol: symbol,
-                  type: transactionType,
-                  unitPrice: ((price - fee) / quantity) || 0
-                });
+                if (symbol && transactionType) {
+                  const newTransaction = new Transaction({
+                    currency: currency,
+                    date: date.toISOString(),
+                    quantity: quantity,
+                    symbol: symbol,
+                    type: transactionType,
+                    unitPrice: ((price - fee) / quantity) || 0
+                  });
 
-                transactions.push(newTransaction);
+                  transactions.push(newTransaction);
+                }
               }
             });
           } catch(err) {
