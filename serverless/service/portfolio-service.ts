@@ -53,11 +53,16 @@ class PortfolioService {
         portfolioShareToday: (portfolio[key].quantity * result[key].price.regularMarketPrice) / volumeToday,
         price: {
           allTime: {
+            portfolioMarketChange: portfolio[key].quantity * (result[key].price.regularMarketPrice - portfolio[key].averagePrice),
+            portfolioMarketPrice: portfolio[key].quantity * result[key].price.regularMarketPrice,
             regularMarketChange: result[key].price.regularMarketPrice - portfolio[key].averagePrice,
             regularMarketChangePercent: (result[key].price.regularMarketPrice - portfolio[key].averagePrice) / portfolio[key].averagePrice,
             regularMarketPrice: result[key].price.regularMarketPrice
           },
-          today: result[key].price
+          today: Object.assign(result[key].price, {
+            portfolioMarketChange: portfolio[key].quantity * result[key].price.regularMarketChange,
+            portfolioMarketPrice: portfolio[key].quantity * result[key].price.regularMarketPrice
+          })
         },
         quantity: portfolio[key].quantity,
         symbol: key

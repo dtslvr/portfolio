@@ -62,14 +62,14 @@
       <ion-card-content>
         <ion-row>
           <ion-col>
-            <h1>{{quote.price[mode].regularMarketPrice | currency:quote.currency}}</h1>
+            <h1>{{quote.price[mode].portfolioMarketPrice | currency:quote.currency}}</h1>
             <div class="quantity">
               {{quote.quantity | number: '1.0-3'}} × {{quote.averagePrice | number: '1.2-2'}}{{quote.currency}}
             </div>
           </ion-col>
           <ion-col>
             <div class="text-right">
-              <span *ngIf="quote.price[mode].regularMarketChange > 0">+</span>{{quote.price[mode].regularMarketChange | number: '1.2-2'}}{{quote.currency}}<br />
+              <span *ngIf="quote.price[mode].regularMarketChange > 0">+</span>{{quote.price[mode].portfolioMarketChange | number: '1.2-2'}}{{quote.currency}}<br />
               <span *ngIf="quote.price[mode].regularMarketChangePercent > 0">+</span>{{quote.price[mode].regularMarketChangePercent | percent: '1.2-2'}}
             </div>
           </ion-col>
