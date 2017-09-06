@@ -3,6 +3,9 @@
     <ion-title>
       Performance
     </ion-title>
+    <ion-buttons end>
+      <ion-badge color="light">v{{this.config.version}}</ion-badge>
+    </ion-buttons>
   </ion-navbar>
 
   <ion-toolbar no-border-top>
@@ -19,31 +22,13 @@
 
 <ion-content>
   <ion-list *ngIf="volume">
-    <ion-card class="volume">
-      <ion-item>
-        <ion-avatar item-start>
-          <ion-icon name="arrow-dropright-circle" class="trend equal" *ngIf="volume.price[mode].performancePercent < TREND_EQUAL_THRESHOLD && volume.price[mode].performancePercent > -TREND_EQUAL_THRESHOLD"></ion-icon>
-          <ion-icon name="arrow-dropup-circle" class="trend up" *ngIf="volume.price[mode].performancePercent >= TREND_EQUAL_THRESHOLD"></ion-icon>
-          <ion-icon name="arrow-dropdown-circle" class="trend down" *ngIf="volume.price[mode].performancePercent <= -TREND_EQUAL_THRESHOLD"></ion-icon>
-        </ion-avatar>
-        <h2>TOTAL</h2>
-        <p>TK</p>
-      </ion-item>
-
-      <ion-card-content>
-        <ion-row>
-          <ion-col>
-            <h1>{{volume.price[mode].price | currency:volume.currency}}</h1>
-          </ion-col>
-          <ion-col>
-            <div class="text-right">
-              <span *ngIf="volume.price[mode].performance > 0">+</span>{{volume.price[mode].performance | number: '1.2-2'}}{{volume.currency}}<br />
-              <span *ngIf="volume.price[mode].performancePercent > 0">+</span>{{volume.price[mode].performancePercent | percent: '1.2-2'}}
-            </div>
-          </ion-col>
-        </ion-row>
-      </ion-card-content>
-    </ion-card>
+    <div class="summary">
+      <h1 no-margin>{{volume.price[mode].price | currency:volume.currency}}</h1>
+      <p no-margin>
+        <span *ngIf="volume.price[mode].performance > 0">+</span>{{volume.price[mode].performance | number: '1.2-2'}}
+        (<span *ngIf="volume.price[mode].performancePercent > 0">+</span>{{volume.price[mode].performancePercent | percent: '1.2-2'}})
+      </p>
+    </div>
     <ion-card *ngFor="let quote of quotes" class="quote">
       <ion-item>
         <ion-avatar item-start>
@@ -64,7 +49,12 @@
           <ion-col>
             <h1>{{quote.price[mode].portfolioMarketPrice | currency:quote.currency}}</h1>
             <div class="quantity">
-              {{quote.quantity | number: '1.0-3'}} × {{quote.averagePrice | number: '1.2-2'}}{{quote.currency}}
+              <ng-container *ngIf="mode === 'today'">
+                {{quote.quantity | number: '1.0-3'}} × {{quote.price[mode].regularMarketPrice | number: '1.2-2'}}{{quote.currency}}
+              </ng-container>
+              <ng-container *ngIf="mode !== 'today'">
+                {{quote.quantity | number: '1.0-3'}} × {{quote.averagePrice | number: '1.2-2'}}{{quote.currency}}
+              </ng-container>
             </div>
           </ion-col>
           <ion-col>

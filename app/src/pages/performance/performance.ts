@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import { LoadingController, NavController, ToastController } from 'ionic-angular';
 import { PortfolioServiceProvider } from '../../providers/portfolio-service/portfolio-service';
 
@@ -16,6 +17,7 @@ export class PerformancePage {
   public volume: any;
 
   constructor(
+    @Inject(APP_CONFIG) private config: IAppConfig,
     public loadingCtrl: LoadingController,
     public navCtrl: NavController,
     public portfolioService: PortfolioServiceProvider,

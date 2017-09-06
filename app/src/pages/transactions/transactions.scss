@@ -1,6 +1,12 @@
 page-transactions {
+  background-color: #eee;
+
   ion-avatar[item-start] {
     margin-right: 8px !important;
+  }
+
+  ion-content {
+    background-color: transparent !important;
   }
 
   ion-icon.transaction {

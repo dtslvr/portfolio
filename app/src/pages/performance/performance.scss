@@ -1,4 +1,6 @@
 page-performance {
+  background-color: #eee;
+
   ion-card {
     ion-avatar[item-end] {
       margin-left: 0;
@@ -43,5 +45,21 @@ page-performance {
         }
       }
     }
+  }
+
+  ion-content {
+    background-color: transparent !important;
+  }
+
+  ion-header {
+    ion-badge {
+      color: #999 !important;
+    }
+  }
+
+  .summary {
+    color: #444;
+    padding: 30px 20px 20px 20px;
+    text-align: center;
   }
 }

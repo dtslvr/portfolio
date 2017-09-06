@@ -72,30 +72,16 @@ export class PortfolioPage {
       data: {
         labels: symbols,
         datasets: [{
-          label: '# of Votes',
           data: data,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-            'rgba(100, 25, 100, 0.2)',
-            'rgba(54, 88, 200, 0.2)',
-            'rgba(235, 206, 90, 0.2)'
-          ]/*,
-          hoverBackgroundColor: [
-            "#FF6384",
-            "#36A2EB",
-            "#FFCE56",
-            "#FF6384",
-            "#36A2EB",
-            "#FFCE56"
-          ]*/
+          backgroundColor: this.getColorPalette()
         }]
       },
       options: {
+        elements: {
+          arc: {
+            borderWidth: 0
+          }
+        },
         legend: {
           position: 'bottom'
         },
@@ -112,6 +98,27 @@ export class PortfolioPage {
         }
       }
     });
+  }
+
+  /**
+   * Color palette, inspired by https://yeun.github.io/open-color
+   */
+  private getColorPalette() {
+    //
+    return [
+      '#329af0', // blue 5
+      '#20c997', // teal 5
+      '#94d82d', // lime 5
+      '#ff922b', // orange 5
+      '#f06595', // pink 5
+      '#845ef7', // violet 5
+      '#5c7cfa', // indigo 5
+      '#22b8cf', // cyan 5
+      '#51cf66', // green 5
+      '#fcc419', // yellow 5
+      '#ff6b6b', // red 5
+      '#cc5de8'  // grape 5
+    ];
   }
 
 }
