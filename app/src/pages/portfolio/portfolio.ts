@@ -14,7 +14,6 @@ export class PortfolioPage {
 
   public doughnutChartAcquisition: any;
   public doughnutChartToday: any;
-  public mode = 'Today';
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -51,8 +50,8 @@ export class PortfolioPage {
 
       loading.dismiss();
 
-      this.doughnutChartAcquisition = this.getChart(this.doughnutCanvasAcquisition.nativeElement, symbols, portfolioSharesAcquisition);
-      this.doughnutChartToday = this.getChart(this.doughnutCanvasToday.nativeElement, symbols, portfolioSharesToday);
+      this.initializeChart('acquisition', this.doughnutCanvasAcquisition.nativeElement, symbols, portfolioSharesAcquisition);
+      this.initializeChart('today', this.doughnutCanvasToday.nativeElement, symbols, portfolioSharesToday);
     })
     .catch((error) => {
       let toast = this.toastCtrl.create({
@@ -63,40 +62,6 @@ export class PortfolioPage {
       toast.present();
 
       loading.dismiss();
-    });
-  }
-
-  private getChart(element, symbols, data) {
-    return new Chart(element, {
-      type: 'doughnut',
-      data: {
-        labels: symbols,
-        datasets: [{
-          data: data,
-          backgroundColor: this.getColorPalette()
-        }]
-      },
-      options: {
-        elements: {
-          arc: {
-            borderWidth: 0
-          }
-        },
-        legend: {
-          position: 'bottom'
-        },
-        tooltips: {
-          callbacks: {
-            label: (tooltipItems, data) => {
-              const label = data.labels[tooltipItems.index];
-              const dataset = data.datasets[tooltipItems.datasetIndex];
-              const currentValue = dataset.data[tooltipItems.index];
-
-              return `${label}: ${(currentValue*100).toFixed(2)}%`;
-            }
-          }
-        }
-      }
     });
   }
 
@@ -119,6 +84,45 @@ export class PortfolioPage {
       '#ff6b6b', // red 5
       '#cc5de8'  // grape 5
     ];
+  }
+
+  private getCutoutPercentage(id) {
+    return (id === 'acquisition') ? 50 : 60;
+  }
+
+  private initializeChart(id, element, symbols, data) {
+    new Chart(element, {
+      type: 'doughnut',
+      data: {
+        labels: symbols,
+        datasets: [{
+          data: data,
+          backgroundColor: this.getColorPalette()
+        }]
+      },
+      options: {
+        cutoutPercentage: this.getCutoutPercentage(id),
+        elements: {
+          arc: {
+            borderWidth: 0
+          }
+        },
+        legend: {
+          position: 'bottom'
+        },
+        tooltips: {
+          callbacks: {
+            label: (tooltipItems, data) => {
+              const label = data.labels[tooltipItems.index];
+              const dataset = data.datasets[tooltipItems.datasetIndex];
+              const currentValue = dataset.data[tooltipItems.index];
+
+              return `${label}: ${(currentValue*100).toFixed(2)}%`;
+            }
+          }
+        }
+      }
+    });
   }
 
 }
