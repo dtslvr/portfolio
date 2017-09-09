@@ -7,6 +7,7 @@ export class Transaction {
   private date: string;
   private quantity: number;
   private symbol: string;
+  private total: number;
   private type: TransactionType;
   private unitPrice: number;
 
@@ -17,6 +18,8 @@ export class Transaction {
     this.symbol = data.symbol;
     this.type = data.type;
     this.unitPrice = data.unitPrice;
+
+    this.total = this.quantity * data.unitPrice;
   }
 
   public getCurrency() {

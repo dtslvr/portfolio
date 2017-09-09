@@ -23,11 +23,42 @@
 <ion-content>
   <ion-list *ngIf="volume">
     <div class="summary">
-      <h1 no-margin>{{volume.price[mode].price | currency:volume.currency}}</h1>
-      <p no-margin>
-        <span *ngIf="volume.price[mode].performance > 0">+</span>{{volume.price[mode].performance | number: '1.2-2'}}
-        (<span *ngIf="volume.price[mode].performancePercent > 0">+</span>{{volume.price[mode].performancePercent | percent: '1.2-2'}})
-      </p>
+      <ion-grid>
+        <ion-row no-padding>
+          <ion-col no-padding text-right>
+          </ion-col>
+          <ion-col class="total">
+            {{volume.price[mode].price | number:'1.2-2'}}
+          </ion-col>
+          <ion-col class="currency" text-left>
+            {{volume.currency}}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      <ion-grid>
+        <ion-row>
+          <ion-col class="change" text-right>
+            <ng-container *ngIf="volume.price[mode].performance > 0">
+              <span class="up">+</span>
+              <span>{{volume.price[mode].performance | number: '1.2-2'}}</span>
+            </ng-container>
+            <ng-container *ngIf="volume.price[mode].performance < 0">
+              <span class="down">-</span>
+              <span>{{volume.price[mode].performance * -1 | number: '1.2-2'}}</span>
+            </ng-container>
+          </ion-col>
+          <ion-col class="change" text-left>
+            <ng-container *ngIf="volume.price[mode].performancePercent > 0">
+              <span class="up">+</span>
+              <span>{{volume.price[mode].performancePercent | percent: '1.2-2'}}</span>
+            </ng-container>
+            <ng-container *ngIf="volume.price[mode].performancePercent < 0">
+              <span class="down">-</span>
+              <span>{{volume.price[mode].performancePercent * -1 | percent: '1.2-2'}}</span>
+            </ng-container>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </div>
     <ion-card *ngFor="let quote of quotes" class="quote">
       <ion-item>

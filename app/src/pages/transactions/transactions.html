@@ -11,31 +11,30 @@
 </ion-header>
 
 <ion-content>
-  <ion-list>
-    <ion-card *ngFor="let transaction of visibleTransactions">
-      <ion-item>
-        <ion-avatar item-start>
-          <ion-icon name="cube" class="transaction bonus" *ngIf="transaction.type === 'BONUS'"></ion-icon>
-          <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.type === 'BUY'"></ion-icon>
-          <ion-icon name="add" class="transaction dividend" *ngIf="transaction.type === 'DIVIDEND'"></ion-icon>
-          <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.type === 'SELL'"></ion-icon>
-        </ion-avatar>
-        <h1>{{transaction.symbol}}</h1>
-      </ion-item>
-
-      <ion-card-content>
-        <ion-row>
-          <ion-col>
-            <p>{{transaction.date | date: 'short'}}</p>
-          </ion-col>
-          <ion-col>
-            <p class="text-right">
-              {{transaction.type}}<br />
-              {{transaction.quantity | number: '1.0-3'}} × {{transaction.unitPrice | number: '1.2-2'}}{{transaction.currency}}
-            </p>
-          </ion-col>
-        </ion-row>
-      </ion-card-content>
-    </ion-card>
-  </ion-list>
+  <ng-container *ngIf="visibleTransactions">
+    <ion-list *ngFor="let transactionsByDay of visibleTransactions">
+      <ng-container *ngFor="let transaction of transactionsByDay; let first = first">
+        <ion-list-header *ngIf="first" no-margin>
+          {{formatDate(transaction.day)}}
+        </ion-list-header>
+        <ion-item>
+          <ion-avatar item-start>
+            <ion-icon name="cube" class="transaction bonus" *ngIf="transaction.type === 'BONUS'"></ion-icon>
+            <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.type === 'BUY'"></ion-icon>
+            <ion-icon name="bowtie" class="transaction corporate-action" *ngIf="transaction.type === 'CORPORATE_ACTION'"></ion-icon>
+            <ion-icon name="add" class="transaction dividend" *ngIf="transaction.type === 'DIVIDEND'"></ion-icon>
+            <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.type === 'SELL'"></ion-icon>
+            <ion-icon name="shuffle" class="transaction split" *ngIf="transaction.type === 'SPLIT'"></ion-icon>
+          </ion-avatar>
+          <h2>{{transaction.symbol}}
+            <span class="type">{{transaction.type}}</span>
+          </h2>
+          <p>
+            {{transaction.quantity | number: '1.0-3'}} × {{transaction.unitPrice | number: '1.2-2'}}{{transaction.currency}}
+            <span class="total">{{transaction.total | number: '1.2-2'}}{{transaction.currency}}</span>
+          </p>
+        </ion-item>
+      </ng-container>
+    </ion-list>
+  </ng-container>
 </ion-content>

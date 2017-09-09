@@ -33,6 +33,8 @@ class PostfinanceImporter extends AbstractImporter {
                 transactionType = TransactionType.CorporateAction;
               } else if (result.Transaction === 'Buy') {
                 transactionType = TransactionType.Buy;
+              } else if (result.Transaction === 'Dividend') {
+                transactionType = TransactionType.Dividend;
               } else if (result.Transaction === 'Sell') {
                 transactionType = TransactionType.Sell;
               } else if (result.Transaction === 'Split') {

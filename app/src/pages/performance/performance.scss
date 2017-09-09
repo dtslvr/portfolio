@@ -60,6 +60,34 @@ page-performance {
   .summary {
     color: #444;
     padding: 30px 20px 20px 20px;
-    text-align: center;
+
+    .grid {
+      padding: 0;
+
+      .currency {
+        padding: 5px 0;
+      }
+
+      .total {
+        font-size: 4rem;
+      }
+
+      .change {
+        font-size: 2rem;
+        padding: 0 10px;
+
+        &:first-child {
+          border-right: 1px solid #ddd;
+        }
+
+        .down {
+          color: color($colors, danger, base);
+        }
+
+        .up {
+          color: color($colors, secondary, base);
+        }
+      }
+    }
   }
 }

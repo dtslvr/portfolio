@@ -10,22 +10,41 @@ page-transactions {
   }
 
   ion-icon.transaction {
+    color: #ccc;
     font-size: 1.6em;
     line-height: 40px;
     text-align: center;
     width: 100%;
 
     &.bonus,
-    &.buy {
-      color: color($colors, secondary, base);
-    }
-
+    &.buy,
     &.dividend {
-      color: #ccc;
+      color: color($colors, secondary, base);
     }
 
     &.sell {
       color: color($colors, danger, base);
     }
+  }
+
+  ion-list {
+    &:last-child {
+      margin-bottom: 0 !important;
+    }
+
+    ion-list-header {
+      ion-label {
+        margin-bottom: 0 !important;
+      }
+    }
+  }
+
+  .total {
+    float: right;
+  }
+
+  .type {
+    float: right;
+    font-weight: 100;
   }
 }
