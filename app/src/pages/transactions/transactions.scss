@@ -14,7 +14,6 @@ page-transactions {
     font-size: 1.6em;
     line-height: 40px;
     text-align: center;
-    width: 100%;
 
     &.bonus,
     &.buy,
@@ -35,6 +34,12 @@ page-transactions {
     ion-list-header {
       ion-label {
         margin-bottom: 0 !important;
+      }
+    }
+
+    ion-item {
+      .item-inner {
+        margin-left: 4px !important;
       }
     }
   }

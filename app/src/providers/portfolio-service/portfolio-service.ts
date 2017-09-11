@@ -25,8 +25,8 @@ export class PortfolioServiceProvider {
     }
   }
 
-  load() {
-    if (this.data) {
+  load(isForceLoad: boolean) {
+    if (this.data && !isForceLoad) {
       // already loaded data
       return Promise.resolve(this.data);
     }

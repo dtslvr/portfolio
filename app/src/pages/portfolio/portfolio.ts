@@ -36,7 +36,7 @@ export class PortfolioPage {
 
     loading.present();
 
-    this.portfolioService.load()
+    this.portfolioService.load(false)
     .then((data) => {
       const symbols = data.quotes.map((obj) => {
         return obj.symbol;

@@ -18,21 +18,22 @@
           {{formatDate(transaction.day)}}
         </ion-list-header>
         <ion-item>
-          <ion-avatar item-start>
-            <ion-icon name="cube" class="transaction bonus" *ngIf="transaction.type === 'BONUS'"></ion-icon>
-            <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.type === 'BUY'"></ion-icon>
-            <ion-icon name="bowtie" class="transaction corporate-action" *ngIf="transaction.type === 'CORPORATE_ACTION'"></ion-icon>
-            <ion-icon name="add" class="transaction dividend" *ngIf="transaction.type === 'DIVIDEND'"></ion-icon>
-            <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.type === 'SELL'"></ion-icon>
-            <ion-icon name="shuffle" class="transaction split" *ngIf="transaction.type === 'SPLIT'"></ion-icon>
-          </ion-avatar>
-          <h2>{{transaction.symbol}}
-            <span class="type">{{transaction.type}}</span>
-          </h2>
+          <ion-icon name="cube" class="transaction bonus" *ngIf="transaction.type === 'BONUS'" item-start></ion-icon>
+          <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.type === 'BUY'" item-start></ion-icon>
+          <ion-icon name="bowtie" class="transaction corporate-action" *ngIf="transaction.type === 'CORPORATE_ACTION'" item-start></ion-icon>
+          <ion-icon name="add" class="transaction dividend" *ngIf="transaction.type === 'DIVIDEND'" item-start></ion-icon>
+          <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.type === 'SELL'" item-start></ion-icon>
+          <ion-icon name="shuffle" class="transaction split" *ngIf="transaction.type === 'SPLIT'" item-start></ion-icon>
+          <h2>{{transaction.symbol}}</h2>
           <p>
             {{transaction.quantity | number: '1.0-3'}} × {{transaction.unitPrice | number: '1.2-2'}}{{transaction.currency}}
-            <span class="total">{{transaction.total | number: '1.2-2'}}{{transaction.currency}}</span>
           </p>
+          <ion-note item-end text-right>
+            <h2>{{transaction.type}}</h2>
+            <p>
+              {{transaction.total | number: '1.2-2'}}{{transaction.currency}}
+            </p>
+          </ion-note>
         </ion-item>
       </ng-container>
     </ion-list>

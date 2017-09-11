@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { LoadingController, NavController } from 'ionic-angular';
 import * as moment from 'moment';
-import { groupBy } from 'lodash';
 import { TransactionsServiceProvider } from '../../providers/transactions-service/transactions-service';
 
 @Component({

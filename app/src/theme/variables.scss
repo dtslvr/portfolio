@@ -99,10 +99,6 @@ ion-loading.clear .loading-wrapper {
   }
 }
 
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
+.has-refresher > .scroll-content {
+  border-top: 0 !important;
 }

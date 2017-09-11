@@ -45,6 +45,21 @@ export class PerformancePage {
     this.loadPerformance();
   }
 
+  public doRefresh(refresher) {
+    this.portfolioService.load(true)
+    .then(data => {
+      this.quotes = data.quotes;
+      this.volume = data.volume;
+    })
+    .catch((error) => {
+      this.showError(error);
+    })
+    .then(() => {
+      // finally
+      refresher.complete();
+    });
+  }
+
   private loadPerformance() {
     const loading = this.loadingCtrl.create({
       cssClass: 'clear'
@@ -52,7 +67,7 @@ export class PerformancePage {
 
     loading.present();
 
-    this.portfolioService.load()
+    this.portfolioService.load(false)
     .then(data => {
       this.quotes = data.quotes;
       this.volume = data.volume;
@@ -60,14 +75,18 @@ export class PerformancePage {
       loading.dismiss();
     })
     .catch((error) => {
-      const toast = this.toastCtrl.create({
-        message: `Error: ${error.message}`,
-        duration: 3000,
-        position: 'bottom'
-      });
-      toast.present();
+      this.showError(error);
 
       loading.dismiss();
     });
+  }
+
+  private showError(error) {
+    const toast = this.toastCtrl.create({
+      message: `Error: ${error.message}`,
+      duration: 3000,
+      position: 'bottom'
+    });
+    toast.present();
   }
 }
