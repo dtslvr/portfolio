@@ -11,6 +11,23 @@
 </ion-header>
 
 <ion-content>
+  <ion-grid class="summary">
+    <ion-row>
+      <ion-col>
+        Buy<br />
+        Sell<br />
+        Fee<br />
+        Transactions
+      </ion-col>
+      <ion-col text-right>
+        {{totalBuy | number: '1.2-2'}}{{baseCurrencySymbol}}<br />
+        {{totalSell | number: '1.2-2'}}{{baseCurrencySymbol}}<br />
+        {{totalFee | number: '1.2-2'}}{{baseCurrencySymbol}}<br />
+        {{totalTransactions}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
   <ng-container *ngIf="visibleTransactions">
     <ion-list *ngFor="let transactionsByDay of visibleTransactions">
       <ng-container *ngFor="let transaction of transactionsByDay; let first = first">
@@ -28,10 +45,11 @@
           <p>
             {{transaction.quantity | number: '1.0-3'}} × {{transaction.unitPrice | number: '1.2-2'}}{{transaction.currency}}
           </p>
-          <ion-note item-end text-right>
+          <ion-note item-end text-right class="total">
             <h2>{{transaction.type}}</h2>
             <p>
               {{transaction.total | number: '1.2-2'}}{{transaction.currency}}
+              <span class="fee">{{transaction.fee | number: '1.2-2'}}</span>
             </p>
           </ion-note>
         </ion-item>

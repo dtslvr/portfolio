@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Thomas Kaul",
   "devDependencies": {
     "@types/node": "8.0.24",
     "serverless": "1.17.0",

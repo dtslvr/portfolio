@@ -10,6 +10,6 @@ export interface IAppConfig {
 
 export const AppConfig: IAppConfig = {
   backendUri: 'https://a4z09td8id.execute-api.us-east-1.amazonaws.com/dev',
-  develMode: true,
-  version: '1.0.2'
+  develMode: false,
+  version: '1.1.0'
 };

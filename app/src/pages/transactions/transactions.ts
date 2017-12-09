@@ -10,6 +10,11 @@ import { TransactionsServiceProvider } from '../../providers/transactions-servic
 export class TransactionsPage {
 
   public allTransactions: any[];
+  public baseCurrencySymbol: string;
+  public totalBuy: number;
+  public totalFee: number;
+  public totalSell: number;
+  public totalTransactions: number;
   public visibleTransactions: any[];
 
   constructor(
@@ -18,6 +23,47 @@ export class TransactionsPage {
     public transactionsService: TransactionsServiceProvider
   ) {
     this.loadTransactions();
+  }
+
+  private calculateTotalBuy() {
+    this.totalBuy = 0;
+    this.visibleTransactions.forEach((transactionGroup) => {
+      transactionGroup.filter((transaction) => transaction.type === 'BUY')
+      .forEach((transaction) => {
+        this.totalBuy += transaction.baseCurrency.total;
+      });
+    });
+  }
+
+  private calculateTotalFee() {
+    this.totalFee = 0;
+    this.visibleTransactions.forEach((transactionGroup) => {
+      transactionGroup.forEach((transaction) => {
+        this.totalFee += transaction.baseCurrency.fee;
+        this.baseCurrencySymbol = transaction.baseCurrency.currencySymbol
+      });
+    });
+  }
+
+  private calculateTotalSell() {
+    this.totalSell = 0;
+    this.visibleTransactions.forEach((transactionGroup) => {
+      transactionGroup.filter((transaction) => transaction.type === 'SELL')
+      .forEach((transaction) => {
+        this.totalSell += transaction.baseCurrency.total;
+      });
+    });
+  }
+
+  private calculateTotalTransactions() {
+    this.totalTransactions = 0;
+    this.visibleTransactions.forEach((transactionGroup) => {
+      transactionGroup.filter((transaction) => transaction.type === 'BUY'
+        || transaction.type === 'SELL')
+      .forEach((transaction) => {
+        this.totalTransactions += 1;
+      });
+    });
   }
 
   public filterItems(ev: any) {
@@ -84,6 +130,14 @@ export class TransactionsPage {
 
   private setTransactions(groupedTransactions: any[]) {
     this.visibleTransactions = groupedTransactions;
+    this.updateSummary();
+  }
+
+  private updateSummary() {
+    this.calculateTotalBuy();
+    this.calculateTotalFee();
+    this.calculateTotalSell();
+    this.calculateTotalTransactions();
   }
 
 }

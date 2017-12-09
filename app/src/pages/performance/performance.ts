@@ -81,6 +81,10 @@ export class PerformancePage {
     });
   }
 
+  public openChart(aChart) {
+    window.open(`http://finance.yahoo.com/chart/${aChart.symbol}`, '_blank');
+  }
+
   private showError(error) {
     const toast = this.toastCtrl.create({
       message: `Error: ${error.message}`,

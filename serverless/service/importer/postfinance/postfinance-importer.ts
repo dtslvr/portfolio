@@ -24,30 +24,32 @@ class PostfinanceImporter extends AbstractImporter {
         complete: (results) => {
           results.data.forEach((result) => {
             try {
-              const currency = result.Currency;
-              const date = moment(result.Date, 'DD-MM-YYYY HH:mm:ss');
-              const quantity = parseFloat(result.Quantity.replace(/'/g,''));
+              const currency = result['Currency'];
+              const date = moment(result['Date'], 'DD-MM-YYYY HH:mm:ss');
+              const fee = result['Costs'];
+              const quantity = parseFloat(result['Quantity'].replace(/'/g,''));
 
               let transactionType;
-              if (result.Transaction === 'Corporate Action') {
+              if (result['Transaction'] === 'Corporate Action') {
                 transactionType = TransactionType.CorporateAction;
-              } else if (result.Transaction === 'Buy') {
+              } else if (result['Transaction'] === 'Buy') {
                 transactionType = TransactionType.Buy;
-              } else if (result.Transaction === 'Dividend') {
+              } else if (result['Transaction'] === 'Dividend') {
                 transactionType = TransactionType.Dividend;
-              } else if (result.Transaction === 'Sell') {
+              } else if (result['Transaction'] === 'Sell') {
                 transactionType = TransactionType.Sell;
-              } else if (result.Transaction === 'Split') {
+              } else if (result['Transaction'] === 'Split') {
                 transactionType = TransactionType.Split;
               }
 
-              const symbol = result.Symbol;
+              const symbol = result['Symbol'];
               const unitPrice = parseFloat(result['Unit price'].replace(/'/g,''));
 
               if (symbol && transactionType) {
                 const transaction = new Transaction({
                   currency: currency,
                   date: date.toISOString(),
+                  fee: fee,
                   quantity: quantity,
                   symbol: symbol,
                   type: transactionType,
@@ -56,7 +58,7 @@ class PostfinanceImporter extends AbstractImporter {
 
                 transactions.push(transaction);
               }
-            } catch(error) {
+            } catch (error) {
             }
           });
 

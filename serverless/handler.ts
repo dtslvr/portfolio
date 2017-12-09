@@ -43,5 +43,20 @@ export async function portfolio(event, context, callback) {
 };
 
 export async function transactions(event, context, callback) {
-  callback(null, await transactionImporter.getTransactions());
+  exchangeRateDataService.loadCurrencies().then(async () => {
+    callback(null, await transactionImporter.getTransactions());
+  }).catch((error) => {
+    console.log(error);
+    // callback(new Error(`[500] ${error}`));
+    callback(null, {
+      statusCode: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        message: error
+      }
+    });
+    return;
+  });
 };

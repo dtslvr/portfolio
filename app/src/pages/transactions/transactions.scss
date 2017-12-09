@@ -46,8 +46,15 @@ page-transactions {
     }
   }
 
+  .summary {
+    line-height: 22px;
+    padding: 10px;
+  }
+
   .total {
-    float: right;
+    .fee {
+      color: color($colors, danger, base);
+    }
   }
 
   .type {

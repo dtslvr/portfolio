@@ -84,9 +84,9 @@ class TransactionImporter {
     const portfolioYahoo = {};
     const yahooSymbol = {
       '8GC': '8GC.F', // '8GC.DE'
-      'BTC': 'BTCEUR=X',
+      'BTC': 'BTC-EUR',
       'GALN': 'GALN.VX',
-      'ETH': 'ETHEUR=X',
+      'ETH': 'ETH-EUR',
       'NOVC': 'NOVA.DE',
       'VIFN': 'VIFN.VX',
       'VOW3': 'VOW3.DE'

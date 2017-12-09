@@ -41,7 +41,7 @@ class CoinbaseImporter extends AbstractImporter {
                   transactionType = TransactionType.Buy;
                 } else if (note.includes('Sold')) {
                   transactionType = TransactionType.Sell;
-                } else if (note.includes('Congrats')) {
+                } else if (note.toLowerCase().includes('bonus')) {
                   transactionType = TransactionType.Bonus;
                 }
 
@@ -51,6 +51,7 @@ class CoinbaseImporter extends AbstractImporter {
                   const newTransaction = new Transaction({
                     currency: currency,
                     date: date.toISOString(),
+                    fee: fee || 0,
                     quantity: quantity,
                     symbol: symbol,
                     type: transactionType,
@@ -61,7 +62,7 @@ class CoinbaseImporter extends AbstractImporter {
                 }
               }
             });
-          } catch(err) {
+          } catch (err) {
             console.log(err);
           }
 
