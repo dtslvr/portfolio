@@ -1,6 +1,6 @@
 {
-  "name": "Ionic",
-  "short_name": "Ionic",
+  "name": "Portfolio",
+  "short_name": "Portfolio",
   "start_url": "index.html",
   "display": "standalone",
   "icons": [{

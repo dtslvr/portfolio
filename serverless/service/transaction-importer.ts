@@ -123,7 +123,7 @@ class TransactionImporter {
 
       // sort transactions by date asc
       transactions = sortBy(transactions, (transaction) => {
-        return moment(transaction.getDate()).format('YYYYMMDD');
+        return moment(transaction.getDate()).unix();
       });
 
       resolve(transactions);
