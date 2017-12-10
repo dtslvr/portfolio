@@ -82,7 +82,7 @@ export class PerformancePage {
   }
 
   public openChart(aChart) {
-    window.open(`http://finance.yahoo.com/chart/${aChart.symbol}`, '_blank');
+    window.open(`http://finance.yahoo.com/quote/${aChart.symbol}/chart`, '_blank');
   }
 
   private showError(error) {

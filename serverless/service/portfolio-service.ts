@@ -71,7 +71,12 @@ class PortfolioService {
 
     let volumePerformanceToday = 0;
     Object.keys(portfolio).map((key) => {
-      volumePerformanceToday += portfolio[key].quantity * find(quotes, {symbol: key}).price.today.regularMarketChange * exchangeRateDataService.getRateToBaseCurrency(find(quotes, {symbol: key}).price.today.currency);
+      if (find(quotes, {symbol: key}).marketState === 'REGULAR') {
+        // Calculate performance of today only if market is open
+        volumePerformanceToday += portfolio[key].quantity *
+          find(quotes, {symbol: key}).price.today.regularMarketChange *
+            exchangeRateDataService.getRateToBaseCurrency(find(quotes, {symbol: key}).price.today.currency);
+      }
     });
 
     return {
