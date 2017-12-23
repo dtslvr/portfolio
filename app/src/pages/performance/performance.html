@@ -25,45 +25,50 @@
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
-  <ion-list *ngIf="volume">
+  <ion-list [hidden]="!volume">
     <div class="summary">
       <ion-grid>
         <ion-row no-padding>
           <ion-col no-padding text-right>
           </ion-col>
           <ion-col class="total" text-center>
-            {{volume.price[mode].price | number:'1.2-2'}}
+            {{volume?.price[mode]?.price | number:'1.2-2'}}
           </ion-col>
           <ion-col class="currency" text-left>
-            {{volume.currency}}
+            {{volume?.currency}}
           </ion-col>
         </ion-row>
       </ion-grid>
       <ion-grid>
         <ion-row>
           <ion-col class="change" text-right>
-            <ng-container *ngIf="volume.price[mode].performance > 0">
+            <ng-container *ngIf="volume?.price[mode]?.performance > 0">
               <span class="up">+</span>
-              <span>{{volume.price[mode].performance | number: '1.2-2'}}</span>
+              <span>{{volume?.price[mode]?.performance | number: '1.2-2'}}</span>
             </ng-container>
-            <ng-container *ngIf="volume.price[mode].performance < 0">
+            <ng-container *ngIf="volume?.price[mode]?.performance < 0">
               <span class="down">-</span>
-              <span>{{volume.price[mode].performance * -1 | number: '1.2-2'}}</span>
+              <span>{{volume?.price[mode]?.performance * -1 | number: '1.2-2'}}</span>
             </ng-container>
           </ion-col>
           <ion-col class="change" text-left>
-            <ng-container *ngIf="volume.price[mode].performancePercent > 0">
+            <ng-container *ngIf="volume?.price[mode]?.performancePercent > 0">
               <span class="up">+</span>
-              <span>{{volume.price[mode].performancePercent | percent: '1.2-2'}}</span>
+              <span>{{volume?.price[mode]?.performancePercent | percent: '1.2-2'}}</span>
             </ng-container>
-            <ng-container *ngIf="volume.price[mode].performancePercent < 0">
+            <ng-container *ngIf="volume?.price[mode]?.performancePercent < 0">
               <span class="down">-</span>
-              <span>{{volume.price[mode].performancePercent * -1 | percent: '1.2-2'}}</span>
+              <span>{{volume?.price[mode]?.performancePercent * -1 | percent: '1.2-2'}}</span>
             </ng-container>
           </ion-col>
         </ion-row>
       </ion-grid>
     </div>
+    <ion-card>
+      <ion-card-content>
+        <canvas #lineCanvasPerformanceSeries></canvas>
+      </ion-card-content>
+    </ion-card>
     <ion-card *ngFor="let quote of quotes" class="quote" (click)="openChart(quote)">
       <ion-item>
         <ion-avatar item-start>

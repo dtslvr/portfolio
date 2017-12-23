@@ -12,9 +12,6 @@ export class PortfolioPage {
   @ViewChild('doughnutCanvasAcquisition') doughnutCanvasAcquisition;
   @ViewChild('doughnutCanvasToday') doughnutCanvasToday;
 
-  public doughnutChartAcquisition: any;
-  public doughnutChartToday: any;
-
   constructor(
     public loadingCtrl: LoadingController,
     public navCtrl: NavController,

@@ -39,7 +39,7 @@ class CoinbaseImporter extends AbstractImporter {
                 const note = transaction[5];
                 if (note.includes('Bought')) {
                   transactionType = TransactionType.Buy;
-                } else if (note.includes('Sold')) {
+                } else if (quantity < 0) {
                   transactionType = TransactionType.Sell;
                 } else if (note.toLowerCase().includes('bonus')) {
                   transactionType = TransactionType.Bonus;
@@ -52,10 +52,10 @@ class CoinbaseImporter extends AbstractImporter {
                     currency: currency,
                     date: date.toISOString(),
                     fee: fee || 0,
-                    quantity: quantity,
+                    quantity: Math.abs(quantity),
                     symbol: symbol,
                     type: transactionType,
-                    unitPrice: ((price - fee) / quantity) || 0
+                    unitPrice: Math.abs((price - fee) / quantity) || 0
                   });
 
                   transactions.push(newTransaction);

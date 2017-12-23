@@ -1,5 +1,6 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
+import { Chart } from 'chart.js';
 import { LoadingController, NavController, ToastController } from 'ionic-angular';
 import { PortfolioServiceProvider } from '../../providers/portfolio-service/portfolio-service';
 
@@ -9,6 +10,8 @@ import { PortfolioServiceProvider } from '../../providers/portfolio-service/port
   providers: [PortfolioServiceProvider]
 })
 export class PerformancePage {
+
+  @ViewChild('lineCanvasPerformanceSeries') lineCanvasPerformanceSeries;
 
   public TREND_EQUAL_THRESHOLD = 0.001; // 0.1%
 
@@ -60,6 +63,54 @@ export class PerformancePage {
     });
   }
 
+  private initializeChart() {
+    const performanceSeries = this.portfolioService.getPerformanceSeries();
+
+    new Chart(this.lineCanvasPerformanceSeries.nativeElement, {
+      type: 'line',
+      data: {
+        labels: performanceSeries.labels,
+        datasets: [{
+          borderColor: '#488aff',
+          data: performanceSeries.data,
+          fill: false
+        }]
+      },
+      options: {
+        elements: {
+          line : {
+            tension : 0
+          },
+          point: {
+            radius: 0
+          }
+        },
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display:false
+            },
+            type: "time",
+            time: {
+              displayFormats: {
+                quarter: 'MMM YYYY'
+              },
+            },
+            display: false
+          }],
+          yAxes: [{
+            gridLines: {
+              display:false
+            }
+          }]
+        }
+      }
+    });
+  }
+
   private loadPerformance() {
     const loading = this.loadingCtrl.create({
       cssClass: 'clear'
@@ -71,6 +122,8 @@ export class PerformancePage {
     .then(data => {
       this.quotes = data.quotes;
       this.volume = data.volume;
+
+      this.initializeChart();
 
       loading.dismiss();
     })

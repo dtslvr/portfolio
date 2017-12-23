@@ -33,6 +33,10 @@ class TransactionImporter {
             portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();
             portfolio[transaction.getSymbol()].quantities.push(transaction.getQuantity());
             portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
+          } else if (transaction.getType() === TransactionType.Sell) {
+            portfolio[transaction.getSymbol()].quantity -= transaction.getQuantity();
+            portfolio[transaction.getSymbol()].quantities.push(-transaction.getQuantity());
+            portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
           } else if (transaction.getType() === TransactionType.CorporateAction) {
             // Rename symbol (move old price to new symbol)
             if (transaction.getQuantity() >= 0) {
@@ -58,12 +62,16 @@ class TransactionImporter {
 
       // calculate averagePrice and total quantity
       for (var key in portfolio) {
-        var sum = 0;
-        var total = 0;
-        for (var i = 0; i < portfolio[key].quantities.length; i++) {
-          sum += (portfolio[key].quantities[i] * portfolio[key].prices[i]);
-          total += portfolio[key].quantities[i];
-        }
+        let sum = 0;
+        let total = 0;
+
+        portfolio[key].quantities
+        .forEach((quantity, index) => {
+          if (quantity > 0) {
+            sum += (quantity * portfolio[key].prices[index]);
+            total += quantity;
+          }
+        });
 
         portfolio[key].averagePrice = (sum / total);
       }
@@ -87,9 +95,11 @@ class TransactionImporter {
       'BTC': 'BTC-EUR',
       'GALN': 'GALN.VX',
       'ETH': 'ETH-EUR',
+      'LTC': 'LTC-EUR',
       'NOVC': 'NOVA.DE',
       'VIFN': 'VIFN.VX',
-      'VOW3': 'VOW3.DE'
+      'VOW3': 'VOW3.DE',
+      'ZGLD': 'ZGLD.SW'
     };
 
     for (var key in portfolio) {

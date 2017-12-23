@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
+import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
+import * as store from 'store';
 
 /*
   Generated class for the PortfolioServiceProvider provider.
@@ -25,7 +27,23 @@ export class PortfolioServiceProvider {
     }
   }
 
-  load(isForceLoad: boolean) {
+  public getPerformanceSeries() {
+    const performanceSeries = store.get('performanceSeries') || {};
+
+    const returnValue = {
+      data: [],
+      labels: []
+    };
+
+    for (var key in performanceSeries) {
+      returnValue.data.push(performanceSeries[key].price);
+      returnValue.labels.push(moment(key, 'YYYYMMDD').toDate());
+    }
+
+    return returnValue;
+  }
+
+  public load(isForceLoad: boolean) {
     if (this.data && !isForceLoad) {
       // already loaded data
       return Promise.resolve(this.data);
@@ -47,9 +65,19 @@ export class PortfolioServiceProvider {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           this.data = data;
+
+          this.updatePerformanceSeries();
+
           resolve(this.data);
         });
     });
+  }
+
+  public updatePerformanceSeries() {
+    const currentDay = moment().format('YYYYMMDD');
+    const performanceSeries = store.get('performanceSeries') || {};
+    performanceSeries[currentDay] = this.data.volume.price.allTime;
+    store.set('performanceSeries', performanceSeries);
   }
 
 }
