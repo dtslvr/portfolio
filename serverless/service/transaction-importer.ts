@@ -1,5 +1,4 @@
 import { coinbaseImporter } from './importer/coinbase/coinbase-importer';
-import * as fs from 'fs';
 import { helper } from './helper';
 import { concat, last, sortBy } from 'lodash';
 import * as moment from 'moment';
@@ -120,7 +119,7 @@ class TransactionImporter {
       let filePathsCoinbase: string[] = [];
       let transactions: Transaction[] = [];
 
-      fs.readdirSync(path.join(__dirname, '..', 'data')).forEach((filePath) => {
+      helper.recursiveReaddirSync(path.join(__dirname, '..', 'data')).forEach((filePath) => {
         if (coinbaseImporter.isValid(filePath)) {
           filePathsCoinbase.push(filePath);
         } else if (postfinanceImporter.isValid(filePath)) {

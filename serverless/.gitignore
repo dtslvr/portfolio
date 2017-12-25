@@ -6,4 +6,5 @@ jspm_packages
 .build
 .serverless
 
-data/**
+data/*/**
+!data/*/.gitkeep

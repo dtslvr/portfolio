@@ -18,7 +18,7 @@ class PostfinanceImporter extends AbstractImporter {
       let transactions: Transaction[] = [];
 
       // Parse local CSV file
-      const file = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'data', filePath), 'utf8');
+      const file = fs.readFileSync(path.join(filePath), 'utf8');
       Papa.parse(file, {
         header: true,
         complete: (results) => {
