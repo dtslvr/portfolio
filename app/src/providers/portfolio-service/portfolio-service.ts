@@ -36,7 +36,7 @@ export class PortfolioServiceProvider {
     };
 
     for (var key in performanceSeries) {
-      returnValue.data.push(performanceSeries[key].price);
+      returnValue.data.push(performanceSeries[key].performance);
       returnValue.labels.push(moment(key, 'YYYYMMDD').toDate());
     }
 

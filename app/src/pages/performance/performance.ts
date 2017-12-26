@@ -66,15 +66,22 @@ export class PerformancePage {
   private initializeChart() {
     const performanceSeries = this.portfolioService.getPerformanceSeries();
 
+    const lineChart = this.lineCanvasPerformanceSeries.nativeElement.getContext('2d');
+    const lineChartGradient = lineChart.createLinearGradient(0, 0, 0, 200);
+    lineChartGradient.addColorStop(0, 'rgba(72, 138, 255, 0.7)');
+    lineChartGradient.addColorStop(1, 'rgba(72, 138, 255, 0)');
+
     new Chart(this.lineCanvasPerformanceSeries.nativeElement, {
       type: 'line',
       data: {
         labels: performanceSeries.labels,
-        datasets: [{
-          borderColor: '#488aff',
-          data: performanceSeries.data,
-          fill: false
-        }]
+        datasets: [
+          {
+            backgroundColor: lineChartGradient,
+            borderColor: '#488aff',
+            data: performanceSeries.data
+          }
+        ]
       },
       options: {
         elements: {
@@ -90,21 +97,26 @@ export class PerformancePage {
         },
         scales: {
           xAxes: [{
+            display: true,
             gridLines: {
-              display:false
+              color: 'rgba(0, 0, 0, 0.075)',
+              display: true,
+              drawBorder: false
             },
-            type: "time",
+            ticks: {
+              fontColor: 'rgba(0, 0, 0, 0.15)',
+              fontSize: 10
+            },
+            position: 'top',
+            type: 'time',
             time: {
               displayFormats: {
                 quarter: 'MMM YYYY'
               },
-            },
-            display: false
+            }
           }],
           yAxes: [{
-            gridLines: {
-              display:false
-            }
+            display: false
           }]
         }
       }

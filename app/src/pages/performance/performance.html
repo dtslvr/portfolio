@@ -26,6 +26,9 @@
   </ion-refresher>
 
   <ion-list [hidden]="!volume">
+    <div class="chart">
+      <canvas #lineCanvasPerformanceSeries width="400" height="200"></canvas>
+    </div>
     <div class="summary">
       <ion-grid>
         <ion-row no-padding>
@@ -64,11 +67,6 @@
         </ion-row>
       </ion-grid>
     </div>
-    <ion-card>
-      <ion-card-content>
-        <canvas #lineCanvasPerformanceSeries></canvas>
-      </ion-card-content>
-    </ion-card>
     <ion-card *ngFor="let quote of quotes" class="quote" (click)="openChart(quote)">
       <ion-item>
         <ion-avatar item-start>
