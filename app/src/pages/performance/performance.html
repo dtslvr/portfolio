@@ -85,7 +85,7 @@
       <ion-card-content>
         <ion-row>
           <ion-col>
-            <h1>{{quote.price[mode].portfolioMarketPrice | currency:quote.currency}}</h1>
+            <h1>{{quote.price[mode].portfolioMarketPrice | currency:quote.currency:'code'}}</h1>
             <div class="quantity">
               <ng-container *ngIf="mode === 'today'">
                 {{quote.quantity | number: '1.0-3'}} × {{quote.price[mode].regularMarketPrice | number: '1.2-2'}}{{quote.currency}}

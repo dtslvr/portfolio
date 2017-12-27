@@ -1,6 +1,6 @@
-import { OpaqueToken } from '@angular/core';
+import { InjectionToken } from '@angular/core';
 
-export let APP_CONFIG = new OpaqueToken('app.config');
+export let APP_CONFIG = new InjectionToken('app.config');
 
 export interface IAppConfig {
   backendUri: string,
@@ -11,5 +11,5 @@ export interface IAppConfig {
 export const AppConfig: IAppConfig = {
   backendUri: 'https://a4z09td8id.execute-api.us-east-1.amazonaws.com/dev',
   develMode: true,
-  version: '1.2.1'
+  version: '1.3.0'
 };

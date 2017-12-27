@@ -1,19 +1,21 @@
+import { registerLocaleData } from '@angular/common';
+import localeDeCh from '@angular/common/locales/de-ch';
 import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { APP_CONFIG, AppConfig } from './app.config';
-
 import { PerformancePage } from '../pages/performance/performance';
 import { PortfolioPage } from '../pages/portfolio/portfolio';
 import { TabsPage } from '../pages/tabs/tabs';
 import { TransactionsPage } from '../pages/transactions/transactions';
-
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { PortfolioServiceProvider } from '../providers/portfolio-service/portfolio-service';
 import { TransactionsServiceProvider } from '../providers/transactions-service/transactions-service';
+
+registerLocaleData(localeDeCh);
 
 @NgModule({
   declarations: [
