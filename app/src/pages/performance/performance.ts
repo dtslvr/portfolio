@@ -53,6 +53,8 @@ export class PerformancePage {
     .then(data => {
       this.quotes = data.quotes;
       this.volume = data.volume;
+
+      this.initializeChart();
     })
     .catch((error) => {
       this.showError(error);
@@ -67,9 +69,14 @@ export class PerformancePage {
     const performanceSeries = this.portfolioService.getPerformanceSeries();
 
     const lineChart = this.lineCanvasPerformanceSeries.nativeElement.getContext('2d');
-    const lineChartGradient = lineChart.createLinearGradient(0, 0, 0, 200);
-    lineChartGradient.addColorStop(0, 'rgba(72, 138, 255, 0.7)');
-    lineChartGradient.addColorStop(1, 'rgba(72, 138, 255, 0)');
+
+    const gradientBackground = lineChart.createLinearGradient(0, 0, 0, 200);
+    gradientBackground.addColorStop(0, 'rgba(72, 138, 255, 0.7)');
+    gradientBackground.addColorStop(1, 'rgba(72, 138, 255, 0)');
+
+    const gradientStroke = lineChart.createLinearGradient(0, 0, screen.width, 0);
+    gradientStroke.addColorStop(0, 'rgba(72, 138, 255, 0.5)');
+    gradientStroke.addColorStop(1, 'rgba(72, 138, 255, 1)');
 
     new Chart(this.lineCanvasPerformanceSeries.nativeElement, {
       type: 'line',
@@ -77,8 +84,8 @@ export class PerformancePage {
         labels: performanceSeries.labels,
         datasets: [
           {
-            backgroundColor: lineChartGradient,
-            borderColor: '#488aff',
+            backgroundColor: gradientBackground,
+            borderColor: gradientStroke,
             data: performanceSeries.data
           }
         ]

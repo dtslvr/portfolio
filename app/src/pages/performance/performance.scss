@@ -58,9 +58,9 @@ page-performance {
   }
 
   .chart {
-    transform: translateX(-40px);
     padding-top: 15px;
-    width: calc(100% + 60px);
+    transform: translateX(-10%);
+    width: 120%;
   }
 
   .summary {
