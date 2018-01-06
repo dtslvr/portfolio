@@ -7,7 +7,9 @@ Mobile Web App which summarizes your portfolio, currently supporting the followi
 ## Architecture
 
 ### Backend
+
 [Serverless Framework](https://serverless.com/framework)
 
 ### Frontend
+
 [Ionic](https://ionicframework.com)
