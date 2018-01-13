@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { LoadingController, NavController } from 'ionic-angular';
+import { LoadingController, NavController, PopoverController } from 'ionic-angular';
 import * as moment from 'moment';
+import { NavbarMenu } from '../../components/navbar-menu/navbar-menu'
+import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 import { TransactionsServiceProvider } from '../../providers/transactions-service/transactions-service';
+import { Subject } from 'rxjs/Rx';
 
 @Component({
   selector: 'page-transactions',
@@ -11,17 +14,28 @@ export class TransactionsPage {
 
   public allTransactions: any[];
   public baseCurrencySymbol: string;
+  public isRedactedMode: boolean;
   public totalBuy: number;
   public totalFee: number;
   public totalSell: number;
   public totalTransactions: number;
   public visibleTransactions: any[];
 
+  private unsubscribeSubject: Subject<void> = new Subject<void>();
+
   constructor(
     public loadingCtrl: LoadingController,
     public navCtrl: NavController,
+    public popoverCtrl: PopoverController,
+    public settingsService: SettingsServiceProvider,
     public transactionsService: TransactionsServiceProvider
   ) {
+    this.settingsService.getIsRedactedMode()
+    .takeUntil(this.unsubscribeSubject.asObservable())
+    .subscribe((isRedactedMode) => {
+      this.isRedactedMode = isRedactedMode;
+    });
+
     this.loadTransactions();
   }
 
@@ -133,11 +147,26 @@ export class TransactionsPage {
     this.updateSummary();
   }
 
+  public showNavbarMenu(myEvent) {
+    let popover = this.popoverCtrl.create(NavbarMenu);
+    popover.present({
+      ev: myEvent
+    });
+  }
+
   private updateSummary() {
     this.calculateTotalBuy();
     this.calculateTotalFee();
     this.calculateTotalSell();
     this.calculateTotalTransactions();
+  }
+
+  /**
+   * Clean up
+   */
+  public ngOnDestroy() {
+    this.unsubscribeSubject.next();
+    this.unsubscribeSubject.complete();
   }
 
 }

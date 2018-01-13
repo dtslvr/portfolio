@@ -95,6 +95,7 @@ class TransactionImporter {
       'GALN': 'GALN.VX',
       'ETH': 'ETH-EUR',
       'LTC': 'LTC-EUR',
+      'NNN1': 'NNN1.F',
       'NOVC': 'NOVA.DE',
       'VIFN': 'VIFN.VX',
       'VOW3': 'VOW3.DE',

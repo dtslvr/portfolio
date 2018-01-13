@@ -4,7 +4,9 @@
       Performance
     </ion-title>
     <ion-buttons end>
-      <ion-badge color="light">v{{this.config.version}}</ion-badge>
+      <button ion-button icon-only (click)="showNavbarMenu($event)">
+        <ion-icon name="more"></ion-icon>
+      </button>
     </ion-buttons>
   </ion-navbar>
 
@@ -29,7 +31,7 @@
     <div class="chart">
       <canvas #lineCanvasPerformanceSeries></canvas>
     </div>
-    <div class="summary">
+    <div class="summary" [hidden]="isRedactedMode">
       <ion-grid>
         <ion-row no-padding>
           <ion-col no-padding text-right>
@@ -85,13 +87,15 @@
       <ion-card-content>
         <ion-row>
           <ion-col>
-            <h1>{{quote.price[mode].portfolioMarketPrice | currency:quote.currency:'code'}}</h1>
+            <h1 [ngClass]="{'redacted': isRedactedMode}">
+              {{quote.price[mode].portfolioMarketPrice | currency:quote.currency:'code'}}
+            </h1>
             <div class="quantity">
               <ng-container *ngIf="mode === 'today'">
-                {{quote.quantity | number: '1.0-3'}} × {{quote.price[mode].regularMarketPrice | number: '1.2-2'}}{{quote.currency}}
+                <span [ngClass]="{'redacted': isRedactedMode}">{{quote.quantity | number: '1.0-3'}}</span> × {{quote.price[mode].regularMarketPrice | number: '1.2-2'}}{{quote.currency}}
               </ng-container>
               <ng-container *ngIf="mode !== 'today'">
-                {{quote.quantity | number: '1.0-3'}} × {{quote.averagePrice | number: '1.2-2'}}{{quote.currency}}
+                <span [ngClass]="{'redacted': isRedactedMode}">{{quote.quantity | number: '1.0-3'}}</span> × {{quote.averagePrice | number: '1.2-2'}}{{quote.currency}}
               </ng-container>
             </div>
           </ion-col>

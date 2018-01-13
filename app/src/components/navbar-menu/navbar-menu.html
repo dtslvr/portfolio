@@ -1,0 +1,9 @@
+<ion-list>
+  <ion-item>
+    <ion-label>Redacted Mode</ion-label>
+    <ion-checkbox [(ngModel)]="isRedactedMode" (ionChange)="updateIsRedactedMode()"></ion-checkbox>
+  </ion-item>
+  <ion-item>
+    Version {{this.config.version}}
+  </ion-item>
+</ion-list>

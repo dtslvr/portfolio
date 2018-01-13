@@ -1,8 +1,11 @@
 import { Component, Inject, ViewChild } from '@angular/core';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import { Chart } from 'chart.js';
-import { LoadingController, NavController, ToastController } from 'ionic-angular';
+import { NavbarMenu } from '../../components/navbar-menu/navbar-menu'
+import { LoadingController, NavController, PopoverController, ToastController } from 'ionic-angular';
 import { PortfolioServiceProvider } from '../../providers/portfolio-service/portfolio-service';
+import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
+import { Subject } from 'rxjs/Rx';
 
 @Component({
   selector: 'page-performance',
@@ -15,17 +18,27 @@ export class PerformancePage {
 
   public TREND_EQUAL_THRESHOLD = 0.001; // 0.1%
 
+  public isRedactedMode: boolean;
   public mode = 'today';
   public quotes: any;
   public volume: any;
+
+  private unsubscribeSubject: Subject<void> = new Subject<void>();
 
   constructor(
     @Inject(APP_CONFIG) private config: IAppConfig,
     public loadingCtrl: LoadingController,
     public navCtrl: NavController,
+    public popoverCtrl: PopoverController,
     public portfolioService: PortfolioServiceProvider,
+    public settingsService: SettingsServiceProvider,
     public toastCtrl: ToastController
   ) {
+    this.settingsService.getIsRedactedMode()
+    .takeUntil(this.unsubscribeSubject.asObservable())
+    .subscribe((isRedactedMode) => {
+      this.isRedactedMode = isRedactedMode;
+    });
   }
 
   ionViewDidLoad() {
@@ -157,6 +170,13 @@ export class PerformancePage {
     window.open(`http://finance.yahoo.com/quote/${aChart.symbol}/chart`, '_blank');
   }
 
+  public showNavbarMenu(myEvent) {
+    let popover = this.popoverCtrl.create(NavbarMenu);
+    popover.present({
+      ev: myEvent
+    });
+  }
+
   private showError(error) {
     const toast = this.toastCtrl.create({
       message: `Error: ${error.message}`,
@@ -164,5 +184,13 @@ export class PerformancePage {
       position: 'bottom'
     });
     toast.present();
+  }
+
+  /**
+   * Clean up
+   */
+  public ngOnDestroy() {
+    this.unsubscribeSubject.next();
+    this.unsubscribeSubject.complete();
   }
 }

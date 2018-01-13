@@ -5,12 +5,6 @@ import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
 import * as store from 'store';
 
-/*
-  Generated class for the PortfolioServiceProvider provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular DI.
-*/
 @Injectable()
 export class PortfolioServiceProvider {
   private backendUri: string;

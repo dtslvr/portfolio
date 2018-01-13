@@ -29,6 +29,8 @@ page-transactions {
   }
 
   ion-list {
+    margin-bottom: 16px !important;
+
     &:last-child {
       margin-bottom: 0 !important;
     }

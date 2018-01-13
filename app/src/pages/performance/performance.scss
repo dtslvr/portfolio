@@ -40,8 +40,21 @@ page-performance {
 
     &.quote {
       ion-card-content {
+        h1 {
+          &.redacted {
+            background-color: #222;
+            border-radius: 5px;
+          }
+        }
+
         .quantity {
           color: #666;
+          .redacted {
+            background-color: #666;
+            border-radius: 5px;
+            display: inline-block;
+            min-width: 20px;
+          }
         }
       }
     }

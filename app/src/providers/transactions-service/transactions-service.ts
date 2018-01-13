@@ -3,12 +3,6 @@ import { Http } from '@angular/http';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import 'rxjs/add/operator/map';
 
-/*
-  Generated class for the TransactionsServiceProvider provider.
-
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular DI.
-*/
 @Injectable()
 export class TransactionsServiceProvider {
   private backendUri: string;
