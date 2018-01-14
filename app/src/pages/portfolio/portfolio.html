@@ -1,17 +1,35 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Portfolio Shares
+      Portfolio
     </ion-title>
   </ion-navbar>
+
+  <ion-toolbar no-border-top>
+    <ion-segment [(ngModel)]="mode" (ngModelChange)="onChangeMode()">
+      <ion-segment-button value="shares">
+        Shares
+      </ion-segment-button>
+      <ion-segment-button value="types">
+        Types
+      </ion-segment-button>
+      <ion-segment-button value="industries">
+        Industries
+      </ion-segment-button>
+      <ion-segment-button value="sectors">
+        Sectors
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content padding>
-  <p class="title" text-center>
-    <strong>Today</strong> vs <strong>Acquisition</strong>
-  </p>
-  <div class="chart-container">
-    <canvas #doughnutCanvasAcquisition width="400" height="400"></canvas>
-    <canvas #doughnutCanvasToday width="400" height="400"></canvas>
+  <div>
+    <p class="title" text-center>
+    </p>
+    <div class="chart-container">
+      <canvas #doughnutCanvasAcquisition width="400" height="400"></canvas>
+      <canvas #doughnutCanvasToday width="400" height="400"></canvas>
+    </div>
   </div>
 </ion-content>

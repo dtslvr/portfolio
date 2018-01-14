@@ -42,18 +42,35 @@ page-performance {
       ion-card-content {
         h1 {
           &.redacted {
-            background-color: #222;
+            background-color: #ccc;
             border-radius: 5px;
+            color: #ccc;
+          }
+        }
+
+        .portfolio-market-change {
+          span {
+            &.redacted {
+              background-color: #ccc;
+              border-radius: 5px;
+              color: #ccc;
+            }
           }
         }
 
         .quantity {
           color: #666;
-          .redacted {
-            background-color: #666;
-            border-radius: 5px;
+
+          span {
             display: inline-block;
-            min-width: 20px;
+          }
+
+          .redacted {
+            background-color: #ccc;
+            border-radius: 5px;
+            color: #ccc;
+            min-width: 30px;
+            white-space: nowrap;
           }
         }
       }

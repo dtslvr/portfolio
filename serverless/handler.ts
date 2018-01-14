@@ -15,7 +15,7 @@ export async function portfolio(event, context, callback) {
     if (symbols.length > 0) {
       yahooFinance.quote({
         symbols: symbols,
-        modules: ['price']
+        modules: ['price', 'summaryProfile']
       }).then((result) => {
         callback(null, portfolioService.getResponse(portfolio, result));
       }).catch((error) => {

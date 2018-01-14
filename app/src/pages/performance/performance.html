@@ -92,16 +92,30 @@
             </h1>
             <div class="quantity">
               <ng-container *ngIf="mode === 'today'">
-                <span [ngClass]="{'redacted': isRedactedMode}">{{quote.quantity | number: '1.0-3'}}</span> × {{quote.price[mode].regularMarketPrice | number: '1.2-2'}}{{quote.currency}}
+                <span [ngClass]="{'redacted': isRedactedMode}">{{quote.quantity | number: '1.0-3'}}</span>
+                <span> × </span>
+                <span>{{quote.price[mode].regularMarketPrice | number: '1.2-2'}}{{quote.currency}}</span>
               </ng-container>
               <ng-container *ngIf="mode !== 'today'">
-                <span [ngClass]="{'redacted': isRedactedMode}">{{quote.quantity | number: '1.0-3'}}</span> × {{quote.averagePrice | number: '1.2-2'}}{{quote.currency}}
+                <span [ngClass]="{'redacted': isRedactedMode}">{{quote.quantity | number: '1.0-3'}}</span>
+                <span> × </span>
+                <span>{{quote.averagePrice | number: '1.2-2'}}{{quote.currency}}</span>
               </ng-container>
             </div>
           </ion-col>
           <ion-col text-right>
-            <span *ngIf="quote.price[mode].regularMarketChange > 0">+</span>{{quote.price[mode].portfolioMarketChange | number: '1.2-2'}}{{quote.currency}}<br />
-            <span *ngIf="quote.price[mode].regularMarketChangePercent > 0">+</span>{{quote.price[mode].regularMarketChangePercent | percent: '1.2-2'}}
+            <div class="portfolio-market-change">
+              <span *ngIf="quote.price[mode].regularMarketChange > 0 && !isRedactedMode">+</span>
+              <span [ngClass]="{'redacted': isRedactedMode}">
+                {{quote.price[mode].portfolioMarketChange | number: '1.2-2'}}{{quote.currency}}
+              </span>
+            </div>
+            <div class="portfolio-market-change-percent">
+              <span *ngIf="quote.price[mode].regularMarketChangePercent > 0">+</span>
+              <span>
+                {{quote.price[mode].regularMarketChangePercent | percent: '1.2-2'}}
+              </span>
+            </div>
           </ion-col>
         </ion-row>
       </ion-card-content>

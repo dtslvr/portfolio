@@ -47,6 +47,7 @@ class PortfolioService {
         currency: result[key].price.currency,
         currencySymbol: result[key].price.currencySymbol,
         exchangeName: result[key].price.exchangeName,
+        industry: result[key].summaryProfile.industry || 'Unknown',
         marketState: result[key].price.marketState,
         name: result[key].price.longName || result[key].price.shortName,
         portfolioShareAcquisition: (portfolio[key].quantity * portfolio[key].averagePrice) / volumeStart,
@@ -65,7 +66,9 @@ class PortfolioService {
           })
         },
         quantity: portfolio[key].quantity,
-        symbol: key
+        sector: result[key].summaryProfile.sector || 'Unknown',
+        symbol: key,
+        type: result[key].price.quoteType || 'Unknown'
       };
     });
 
