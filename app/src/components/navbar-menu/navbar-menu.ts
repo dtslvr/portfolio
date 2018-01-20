@@ -3,6 +3,7 @@ import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import { ViewController } from 'ionic-angular';
 import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 import { Subject } from 'rxjs/Rx';
+import * as store from 'store';
 
 @Component({
   selector: 'navbar-menu',
@@ -10,7 +11,9 @@ import { Subject } from 'rxjs/Rx';
 })
 export class NavbarMenu {
 
-  private isRedactedMode: boolean;
+  public isRedactedMode: boolean;
+  public userId: string;
+
   private unsubscribeSubject: Subject<void> = new Subject<void>();
 
   constructor(
@@ -18,6 +21,8 @@ export class NavbarMenu {
     public settingsService: SettingsServiceProvider,
     public viewCtrl: ViewController
   ) {
+    this.userId = store.get('userId');
+
     this.settingsService.getIsRedactedMode()
     .takeUntil(this.unsubscribeSubject.asObservable())
     .subscribe((isRedactedMode) => {
@@ -27,6 +32,11 @@ export class NavbarMenu {
 
   private close() {
     this.viewCtrl.dismiss();
+  }
+
+  public logout() {
+    store.remove('userId');
+    window.location.replace(location.pathname);
   }
 
   public updateIsRedactedMode() {

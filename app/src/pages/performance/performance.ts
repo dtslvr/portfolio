@@ -170,10 +170,10 @@ export class PerformancePage {
     window.open(`http://finance.yahoo.com/quote/${aChart.symbol}/chart`, '_blank');
   }
 
-  public showNavbarMenu(myEvent) {
-    let popover = this.popoverCtrl.create(NavbarMenu);
+  public showNavbarMenu(aEvent) {
+    const popover = this.popoverCtrl.create(NavbarMenu);
     popover.present({
-      ev: myEvent
+      ev: aEvent
     });
   }
 

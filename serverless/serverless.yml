@@ -63,8 +63,12 @@ functions:
     handler: handler.portfolio
     events:
       - http:
-          path: portfolio
+          path: portfolio/{id}
           method: get
+          request:
+            parameters:
+              paths:
+                id: true
           cors:
             origin: '*'
             headers:
@@ -79,8 +83,12 @@ functions:
     handler: handler.transactions
     events:
       - http:
-          path: transactions
+          path: transactions/{id}
           method: get
+          request:
+            parameters:
+              paths:
+                id: true
           cors:
             origin: '*'
             headers:

@@ -9,7 +9,23 @@ import * as yahooFinance from 'yahoo-finance';
 
 export async function portfolio(event, context, callback) {
   exchangeRateDataService.loadCurrencies().then(async () => {
-    const portfolio = await transactionImporter.getPortfolio(moment());
+    let portfolio;
+
+    try {
+      portfolio = await transactionImporter.getPortfolio(event.pathParameters.id, moment());
+    } catch (error) {
+      callback((null), {
+        statusCode: error.statusCode,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: {
+          message: error.message
+        }
+      });
+      return;
+    }
+
     const symbols = Object.keys(portfolio);
 
     if (symbols.length > 0) {
@@ -19,17 +35,24 @@ export async function portfolio(event, context, callback) {
       }).then((result) => {
         callback(null, portfolioService.getResponse(portfolio, result));
       }).catch((error) => {
-        console.log(error);
         // callback(new Error(`[500] ${error}`));
+        callback((null), {
+          statusCode: 500,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: {
+            message: error
+          }
+        });
         return;
       });
     } else {
       callback(null, portfolioService.getEmptyResponse());
     }
   }).catch((error) => {
-    console.log(error);
     // callback(new Error(`[500] ${error}`));
-    callback(null, {
+    callback((null), {
       statusCode: 500,
       headers: {
         'Content-Type': 'application/json'
@@ -44,9 +67,8 @@ export async function portfolio(event, context, callback) {
 
 export async function transactions(event, context, callback) {
   exchangeRateDataService.loadCurrencies().then(async () => {
-    callback(null, await transactionImporter.getTransactions());
+    callback(null, await transactionImporter.getTransactions(event.pathParameters.id));
   }).catch((error) => {
-    console.log(error);
     // callback(new Error(`[500] ${error}`));
     callback(null, {
       statusCode: 500,

@@ -1,9 +1,16 @@
 <ion-list>
   <ion-item>
+    {{userId}}
+  </ion-item>
+  <ion-item>
     <ion-label>Redacted Mode</ion-label>
     <ion-checkbox [(ngModel)]="isRedactedMode" (ionChange)="updateIsRedactedMode()"></ion-checkbox>
   </ion-item>
+    <button ion-item (click)="logout()">
+      <ion-icon name="log-out" item-start></ion-icon>
+      Logout
+    </button>
   <ion-item>
-    Version {{this.config.version}}
+    Version {{config.version}}
   </ion-item>
 </ion-list>

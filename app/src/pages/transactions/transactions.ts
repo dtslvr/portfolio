@@ -147,10 +147,10 @@ export class TransactionsPage {
     this.updateSummary();
   }
 
-  public showNavbarMenu(myEvent) {
-    let popover = this.popoverCtrl.create(NavbarMenu);
+  public showNavbarMenu(aEvent) {
+    const popover = this.popoverCtrl.create(NavbarMenu);
     popover.present({
-      ev: myEvent
+      ev: aEvent
     });
   }
 

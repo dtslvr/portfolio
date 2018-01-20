@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
-import { LoadingController, NavController, ToastController } from 'ionic-angular';
+import { NavbarMenu } from '../../components/navbar-menu/navbar-menu'
+import { LoadingController, NavController, PopoverController, ToastController } from 'ionic-angular';
 import { sum, values } from 'lodash';
 import { PortfolioServiceProvider } from '../../providers/portfolio-service/portfolio-service';
 
@@ -30,6 +31,7 @@ export class PortfolioPage {
   constructor(
     public loadingCtrl: LoadingController,
     public navCtrl: NavController,
+    public popoverCtrl: PopoverController,
     public portfolioService: PortfolioServiceProvider,
     public toastCtrl: ToastController) {
   }
@@ -251,6 +253,13 @@ export class PortfolioPage {
       this.chartAquisition = this.initializeChart(this.mode + '-acquisition', this.doughnutCanvasAcquisition.nativeElement, Object.keys(this.sectorsMapAcquisition), values(this.sectorsMapAcquisition));
       this.chartToday = this.initializeChart(this.mode + '-today', this.doughnutCanvasToday.nativeElement, Object.keys(this.sectorsMapToday), values(this.sectorsMapToday));
     }
+  }
+
+  public showNavbarMenu(aEvent) {
+    const popover = this.popoverCtrl.create(NavbarMenu);
+    popover.present({
+      ev: aEvent
+    });
   }
 
 }

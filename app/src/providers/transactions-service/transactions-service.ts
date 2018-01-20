@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import 'rxjs/add/operator/map';
+import * as store from 'store';
 
 @Injectable()
 export class TransactionsServiceProvider {
@@ -31,7 +32,7 @@ export class TransactionsServiceProvider {
       // then on the response, it'll map the JSON data to a parsed JS object.
       // Next, we process the data and resolve the promise with the new data.
       // this.http.get('https://randomuser.me/api/?results=10')
-      this.http.get(`${this.backendUri}/transactions`)
+      this.http.get(`${this.backendUri}/transactions/${store.get('userId')}`)
         .map(res => res.json())
         .subscribe(data => {
           // we've got back the raw data, now generate the core schedule data

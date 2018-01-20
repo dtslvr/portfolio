@@ -1,4 +1,5 @@
 import { registerLocaleData } from '@angular/common';
+import { appRoutingProviders, routing } from './app.routes';
 import localeDeCh from '@angular/common/locales/de-ch';
 import { ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
@@ -9,6 +10,7 @@ import { NavbarMenu } from '../components/navbar-menu/navbar-menu';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
+import { LandingPage } from '../pages/landing/landing';
 import { PerformancePage } from '../pages/performance/performance';
 import { PortfolioPage } from '../pages/portfolio/portfolio';
 import { TabsPage } from '../pages/tabs/tabs';
@@ -21,6 +23,7 @@ registerLocaleData(localeDeCh);
 
 @NgModule({
   declarations: [
+    LandingPage,
     MyApp,
     NavbarMenu,
     PerformancePage,
@@ -31,10 +34,12 @@ registerLocaleData(localeDeCh);
   imports: [
     BrowserModule,
     HttpModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    routing
   ],
   bootstrap: [IonicApp],
   entryComponents: [
+    LandingPage,
     MyApp,
     NavbarMenu,
     PerformancePage,
@@ -43,6 +48,7 @@ registerLocaleData(localeDeCh);
     TransactionsPage
   ],
   providers: [
+    appRoutingProviders,
     StatusBar,
     SplashScreen,
     {

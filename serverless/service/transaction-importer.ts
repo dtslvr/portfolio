@@ -1,5 +1,7 @@
-import { coinbaseImporter } from './importer/coinbase/coinbase-importer';
+import { awsManager } from './aws-manager';
+import { config } from '../config/config';
 import { helper } from './helper';
+import { coinbaseImporter } from './importer/coinbase/coinbase-importer';
 import { concat, last, sortBy } from 'lodash';
 import * as moment from 'moment';
 import * as Papa from 'papaparse';
@@ -10,10 +12,16 @@ import { TransactionType } from '../type/transaction-type';
 
 class TransactionImporter {
 
-  public async getPortfolio(aDate) {
+  public async getPortfolio(aUserId: string, aDate) {
     return new Promise(async (resolve, reject) => {
       let portfolio = {};
-      const transactions: Transaction[] = await this.getAllTransactions();
+      let transactions: Transaction[] = [];
+      try {
+        transactions = await this.loadTransactions(aUserId);
+      } catch (error) {
+        return reject(error);
+      }
+
       let currentPrice;
 
       transactions.forEach((transaction: Transaction) => {
@@ -79,11 +87,11 @@ class TransactionImporter {
     });
   }
 
-  public async getTransactions() {
+  public async getTransactions(aUserId: string) {
     return {
       statusCode: 200,
       headers: helper.getCORSHeaders(),
-      body: JSON.stringify(await this.getAllTransactions())
+      body: JSON.stringify(await this.loadTransactions(aUserId))
     };
   }
 
@@ -114,7 +122,8 @@ class TransactionImporter {
     return portfolioYahoo;
   }
 
-  private async getAllTransactions(): Promise<Transaction[]> {
+  // TODO: use for importing transactions from differnet platforms
+  private async importTransactions(): Promise<Transaction[]> {
     return new Promise<Transaction[]>(async (resolve, reject) => {
       let filePathsPostfinance: string[] = [];
       let filePathsCoinbase: string[] = [];
@@ -137,6 +146,40 @@ class TransactionImporter {
       });
 
       resolve(transactions);
+    });
+  }
+
+  private async loadTransactions(aUserId: string): Promise<Transaction[]> {
+    return new Promise<Transaction[]>(async (resolve, reject) => {
+      const transactions: Transaction[] = [];
+      const params = {
+        Bucket: config.aws.s3Bucket,
+        Key: `accounts/${aUserId}/transactions.json`
+      };
+
+      awsManager.getS3().getObject(params, (error, data) => {
+        if (error) {
+          return reject(error);
+        }
+
+        const rawTransactions = JSON.parse(data.Body.toString('utf8'));
+
+        rawTransactions.forEach((rawTransaction) => {
+          const transaction = new Transaction({
+            currency: rawTransaction.currency,
+            date: rawTransaction.date,
+            fee: rawTransaction.fee,
+            quantity: rawTransaction.quantity,
+            symbol: rawTransaction.symbol,
+            type: <TransactionType>rawTransaction.type,
+            unitPrice: rawTransaction.unitPrice
+          });
+
+          transactions.push(transaction);
+        });
+
+        resolve(transactions);
+      });
     });
   }
 

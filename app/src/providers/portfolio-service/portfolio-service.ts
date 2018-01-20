@@ -49,7 +49,7 @@ export class PortfolioServiceProvider {
       // then on the response, it'll map the JSON data to a parsed JS object.
       // Next, we process the data and resolve the promise with the new data.
       // this.http.get('https://randomuser.me/api/?results=10')
-      this.http.get(`${this.backendUri}/portfolio`)
+      this.http.get(`${this.backendUri}/portfolio/${store.get('userId')}`)
         .map(res => res.json())
         .catch((error) => {
           reject(error.json());
