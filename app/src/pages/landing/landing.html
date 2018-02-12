@@ -1,27 +1,44 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>Portfolio</ion-title>
-  </ion-navbar>
-</ion-header>
-
 <ion-content>
-  <form (submit)="doSignup()">
-    <ion-list>
 
-      <ion-item>
-        <ion-label color="primary" stacked>Enter Name</ion-label>
-        <ion-input type="text" [(ngModel)]="account.userId" name="userId" placeholder="Stay anonymous..."></ion-input>
-      </ion-item>
+  <div padding text-center>
+    <ion-row>
+      <ion-col>
+        <div class="logo">
+        </div>
+      </ion-col>
+    </ion-row>
 
-      <div padding>
+    <ion-row>
+      <ion-col no-padding>
+        <ion-list>
+
+          <ion-item class="username">
+            <ion-input type="text" [(ngModel)]="account.userId" name="userId" placeholder="Claim your name..."></ion-input>
+          </ion-item>
+
+        </ion-list>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col no-padding>
         <button ion-button
-          color="primary"
-          block
-          [disabled]="!account.userId || account.userId.length <= 2">
+          (click)="doSignup()"
+          color="dark"
+          [disabled]="!account.userId || account.userId.length <= 2"
+          outline
+          round>
           Get Started
         </button>
-      </div>
+      </ion-col>
+    </ion-row>
 
-    </ion-list>
-  </form>
+  </div>
+
 </ion-content>
+
+<ion-footer no-border padding text-center>
+  <small>
+    <strong>#ProTip</strong> Choose a random name to stay anonymous
+  </small>
+</ion-footer>

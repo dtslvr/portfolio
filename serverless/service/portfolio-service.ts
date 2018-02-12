@@ -68,7 +68,7 @@ class PortfolioService {
         quantity: portfolio[key].quantity,
         sector: result[key].summaryProfile.sector || 'Unknown',
         symbol: key,
-        type: result[key].price.quoteType || 'Unknown'
+        type: helper.capitalizeFirstLetter(result[key].price.quoteType) || 'Unknown'
       };
     });
 

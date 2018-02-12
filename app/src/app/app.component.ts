@@ -5,7 +5,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LandingPage } from '../pages/landing/landing';
 import { TabsPage } from '../pages/tabs/tabs';
-import * as store from 'store';
+import { SettingsServiceProvider } from '../providers/settings-service/settings-service';
 
 @Component({
   templateUrl: 'app.html'
@@ -15,31 +15,37 @@ export class MyApp {
 
   constructor(
     private router: Router,
-    platform: Platform,
-    statusBar: StatusBar,
-    splashScreen: SplashScreen,
+    private platform: Platform,
+    private settingsService: SettingsServiceProvider,
+    private statusBar: StatusBar,
+    private splashScreen: SplashScreen,
   ) {
-    this.router.events.subscribe((val) => {
-      if (val instanceof RoutesRecognized) {
-        const hasUser = store.get('userId') ? true: false;
-        const userId = val.state.root.queryParams['userId'];
+    const hasUser = this.settingsService.getUserId() ? true : false;
 
-        if (userId) {
-          store.set('userId', userId.toLowerCase());
-          this.rootPage = TabsPage;
-        } else if (hasUser) {
-          this.rootPage = TabsPage;
-        } else {
-          this.rootPage = LandingPage;
+    if (this.platform.is('core') || this.platform.is('mobileweb')) {
+      this.router.events.subscribe((val) => {
+        if (val instanceof RoutesRecognized) {
+          const userId = val.state.root.queryParams['userId'];
+
+          if (userId) {
+            this.settingsService.setUserId(userId);
+            this.rootPage = TabsPage;
+          } else if (hasUser) {
+            this.rootPage = TabsPage;
+          } else {
+            this.rootPage = LandingPage;
+          }
         }
-      }
-    });
+      });
+    } else if (hasUser) {
+      this.rootPage = TabsPage;
+    } else {
+      this.rootPage = LandingPage;
+    }
 
-    platform.ready().then(() => {
-      // Okay, so the platform is ready and our plugins are available.
-      // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
-      splashScreen.hide();
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
     });
   }
 

@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { Http, RequestOptions } from '@angular/http';
+import { Api } from '../api';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
 import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
+import { SettingsServiceProvider } from '../settings-service/settings-service';
 import * as store from 'store';
 
 @Injectable()
@@ -12,7 +14,9 @@ export class PortfolioServiceProvider {
 
   constructor(
     @Inject(APP_CONFIG) private config: IAppConfig,
-    public http: Http
+    private api: Api,
+    private http: Http,
+    private settingsService: SettingsServiceProvider
   ) {
     if (this.config.develMode) {
       this.backendUri = 'http://localhost:3000';
@@ -43,13 +47,16 @@ export class PortfolioServiceProvider {
       return Promise.resolve(this.data);
     }
 
+    const options = new RequestOptions();
+    options.headers = this.api.getHeaders();
+
     // don't have the data yet
     return new Promise((resolve, reject) => {
       // We're using Angular HTTP provider to request the data,
       // then on the response, it'll map the JSON data to a parsed JS object.
       // Next, we process the data and resolve the promise with the new data.
       // this.http.get('https://randomuser.me/api/?results=10')
-      this.http.get(`${this.backendUri}/portfolio/${store.get('userId')}`)
+      this.http.get(`${this.backendUri}/portfolio/${this.settingsService.getUserId()}`, options)
         .map(res => res.json())
         .catch((error) => {
           reject(error.json());

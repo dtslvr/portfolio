@@ -50,7 +50,7 @@ export class PortfolioPage {
 
     loading.present();
 
-    this.portfolioService.load(false)
+    this.portfolioService.load(true)
     .then((data) => {
       this.labels = data.quotes.map((obj) => {
         return obj.name;
@@ -230,8 +230,6 @@ export class PortfolioPage {
   }
 
   public onChangeMode() {
-    console.log(`The mode has changed to ${this.mode}`);
-
     if (this.chartAquisition) {
       this.chartAquisition.destroy();
     }

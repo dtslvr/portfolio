@@ -2,16 +2,26 @@ import * as yahooFinance from 'yahoo-finance';
 
 class ExchangeRateDataService {
 
-  private baseCurrency = 'CHF';
-  private baseCurrencySymbol = 'CHF';
+  private baseCurrency;
+  private baseCurrencySymbol;
   private currencies = {};
 
-  private pairs = [
-    `USD${this.baseCurrency}=X`,
-    `EUR${this.baseCurrency}=X`
-  ];
+  private pairs: string[] = [];
 
-  public loadCurrencies() {
+  private addPair(aCurrency) {
+    if (aCurrency !== this.baseCurrency) {
+      this.pairs.push(`${aCurrency}${this.baseCurrency}=X`);
+    }
+  }
+
+  public loadCurrencies(aBaseCurrency?: string) {
+    this.baseCurrency = aBaseCurrency || 'USD';
+    this.baseCurrencySymbol = aBaseCurrency || 'USD';
+
+    this.addPair('CHF');
+    this.addPair('EUR');
+    this.addPair('USD');
+
     return new Promise((resolve, reject) => {
       yahooFinance.quote({
         symbols: this.pairs,

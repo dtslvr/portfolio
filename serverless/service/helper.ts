@@ -3,6 +3,16 @@ import * as path from 'path';
 
 class Helper {
 
+  public capitalizeFirstLetter(aString) {
+    if (aString === 'ETF') {
+      return aString;
+    } else if (aString) {
+      return aString.charAt(0).toUpperCase() + aString.slice(1).toLowerCase();
+    } else {
+      return null;
+    }
+  }
+
   public getCORSHeaders () {
     return {
       'Access-Control-Allow-Origin': '*', // Required for CORS support to work

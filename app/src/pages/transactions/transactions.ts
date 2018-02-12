@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { CreateTransactionPage } from './create-transaction/create-transaction';
 import { LoadingController, NavController, PopoverController } from 'ionic-angular';
 import * as moment from 'moment';
 import { NavbarMenu } from '../../components/navbar-menu/navbar-menu'
@@ -22,6 +23,7 @@ export class TransactionsPage {
   public visibleTransactions: any[];
 
   private unsubscribeSubject: Subject<void> = new Subject<void>();
+  private userId: string;
 
   constructor(
     public loadingCtrl: LoadingController,
@@ -36,7 +38,9 @@ export class TransactionsPage {
       this.isRedactedMode = isRedactedMode;
     });
 
-    this.loadTransactions();
+    this.loadTransactions(true);
+    this.userId = this.settingsService.getUserId();
+
   }
 
   private calculateTotalBuy() {
@@ -78,6 +82,10 @@ export class TransactionsPage {
         this.totalTransactions += 1;
       });
     });
+  }
+
+  public goToCreateTransactionPage() {
+    this.navCtrl.push(CreateTransactionPage, { 'parentPage': this });
   }
 
   public filterItems(ev: any) {
@@ -125,20 +133,39 @@ export class TransactionsPage {
     return groupedTransactions.reverse();
   }
 
-  private loadTransactions() {
+  public isDemoUser() {
+    return this.userId === 'demo';
+  }
+
+  private loadTransactions(isForced = false) {
     let loading = this.loadingCtrl.create({
       cssClass: 'clear'
     });
 
     loading.present();
 
-    this.transactionsService.load()
-    .then(data => {
+    this.transactionsService.load(isForced)
+    .then((data) => {
       this.allTransactions = data;
 
       this.setTransactions(this.groupTransactions(this.allTransactions));
 
       loading.dismiss();
+    });
+  }
+
+  public removeTransaction(aTransaction) {
+    let loading = this.loadingCtrl.create({
+      cssClass: 'clear'
+    });
+
+    loading.present();
+
+    this.transactionsService.delete(aTransaction)
+    .then((data) => {
+      loading.dismiss();
+
+      this.loadTransactions(true);
     });
   }
 

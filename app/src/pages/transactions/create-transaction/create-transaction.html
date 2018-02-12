@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      New Transaction
+    </ion-title>
+    <ion-buttons end>
+      <button ion-button
+        (click)="doCreate()"
+        [disabled]="!transaction.currency || !transaction.date || !transaction.quantity || !transaction.symbol || !transaction.type || !transaction.unitPrice">
+        Add
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item>
+      <ion-label color="primary" stacked>Symbol</ion-label>
+      <ion-select [(ngModel)]="transaction.symbol" name="symbol">
+        <ion-option *ngFor="let symbol of symbols" [value]="symbol.id">
+          {{symbol.label}} ({{symbol.id}})
+        </ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label color="primary" stacked>Type</ion-label>
+      <ion-select [(ngModel)]="transaction.type" name="type">
+        <ion-option *ngFor="let transactionType of transactionTypes">{{transactionType}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label color="primary" stacked>Date</ion-label>
+      <ion-datetime displayFormat="DD.MM.YYYY" [(ngModel)]="transaction.date" name="date"></ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label color="primary" stacked>Quantity</ion-label>
+      <ion-input type="number" [(ngModel)]="transaction.quantity" name="quantity" placeholder=""></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label color="primary" stacked>Currency</ion-label>
+      <ion-select [(ngModel)]="transaction.currency" name="currency">
+        <ion-option *ngFor="let currency of currencies">{{currency}}</ion-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label color="primary" stacked>Unit Price</ion-label>
+      <ion-input type="number" [(ngModel)]="transaction.unitPrice" name="unitPrice" placeholder=""></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label color="primary" stacked>Fee</ion-label>
+      <ion-input type="number" [(ngModel)]="transaction.fee" name="fee" placeholder=""></ion-input>
+    </ion-item>
+  </ion-list>
+</ion-content>

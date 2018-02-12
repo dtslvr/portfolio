@@ -16,6 +16,12 @@
 </ion-header>
 
 <ion-content>
+  <ion-fab *ngIf="!isDemoUser()" right bottom>
+    <button ion-fab color="primary" (click)="goToCreateTransactionPage()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
   <ion-grid class="summary" *ngIf="totalBuy" [hidden]="isRedactedMode">
     <ion-row>
       <ion-col>
@@ -39,25 +45,32 @@
         <ion-list-header *ngIf="first" no-margin>
           {{formatDate(transaction.day)}}
         </ion-list-header>
-        <ion-item>
-          <ion-icon name="cube" class="transaction bonus" *ngIf="transaction.type === 'BONUS'" item-start></ion-icon>
-          <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.type === 'BUY'" item-start></ion-icon>
-          <ion-icon name="bowtie" class="transaction corporate-action" *ngIf="transaction.type === 'CORPORATE_ACTION'" item-start></ion-icon>
-          <ion-icon name="add" class="transaction dividend" *ngIf="transaction.type === 'DIVIDEND'" item-start></ion-icon>
-          <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.type === 'SELL'" item-start></ion-icon>
-          <ion-icon name="shuffle" class="transaction split" *ngIf="transaction.type === 'SPLIT'" item-start></ion-icon>
-          <h2>{{transaction.symbol}}</h2>
-          <p>
-            {{transaction.quantity | number: '1.0-3'}} × {{transaction.unitPrice | number: '1.2-2'}}{{transaction.currency}}
-          </p>
-          <ion-note item-end text-right class="total">
-            <h2>{{transaction.type}}</h2>
+        <ion-item-sliding #item>
+          <ion-item>
+            <ion-icon name="cube" class="transaction bonus" *ngIf="transaction.type === 'BONUS'" item-start></ion-icon>
+            <ion-icon name="arrow-round-forward" class="transaction buy" *ngIf="transaction.type === 'BUY'" item-start></ion-icon>
+            <ion-icon name="bowtie" class="transaction corporate-action" *ngIf="transaction.type === 'CORPORATE_ACTION'" item-start></ion-icon>
+            <ion-icon name="add" class="transaction dividend" *ngIf="transaction.type === 'DIVIDEND'" item-start></ion-icon>
+            <ion-icon name="arrow-round-back" class="transaction sell" *ngIf="transaction.type === 'SELL'" item-start></ion-icon>
+            <ion-icon name="shuffle" class="transaction split" *ngIf="transaction.type === 'SPLIT'" item-start></ion-icon>
+            <h2>{{transaction.symbol}}</h2>
             <p>
-              {{transaction.total | number: '1.2-2'}}{{transaction.currency}}
-              <span class="fee">{{transaction.fee | number: '1.2-2'}}</span>
+              {{transaction.quantity | number: '1.0-3'}} × {{transaction.unitPrice | number: '1.2-2'}}{{transaction.currency}}
             </p>
-          </ion-note>
-        </ion-item>
+            <ion-note item-end text-right class="total">
+              <h2>&nbsp;</h2>
+              <p>
+                {{transaction.total | number: '1.2-2'}}{{transaction.currency}}
+                <span>({{transaction.fee | number: '1.2-2'}})</span>
+              </p>
+            </ion-note>
+          </ion-item>
+          <ion-item-options *ngIf="!isDemoUser()" side="right">
+            <button ion-button class="delete" color="danger" (click)="removeTransaction(transaction)">
+              <ion-icon name="trash"></ion-icon>
+            </button>
+          </ion-item-options>
+        </ion-item-sliding>
       </ng-container>
     </ion-list>
   </ng-container>

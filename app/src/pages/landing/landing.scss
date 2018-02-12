@@ -1,2 +1,63 @@
 page-landing {
+  .footer {
+    background-color: #f5ba19;
+  }
+
+  .scroll-content {
+    background-color: #f5ba19;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    ion-row {
+      align-items: center;
+      text-align: center;
+
+      button[disabled] {
+        border-color: #9c7d2a;
+        color: #9c7d2a;
+        opacity: 1;
+      }
+
+      .list {
+        margin: 0;
+
+        ion-item {
+          background-color: transparent !important;
+          border-bottom: 0 !important;
+          box-shadow: none !important;
+          padding: 0 !important;
+
+          &.username {
+            border-radius: 30px !important;
+            margin-bottom: 10px;
+            background-color: white !important;
+            opacity: 0.95;
+            font-size: 0.9em;
+
+            &.input-has-focus {
+              opacity: 1;
+            }
+
+            input {
+              text-align: center;
+            }
+
+            .item-inner {
+              padding: 0;
+            }
+          }
+        }
+      }
+
+      .logo {
+        background-image: url('../assets/img/icon-512.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: 72px;
+        margin: 10% 0;
+      }
+    }
+  }
 }

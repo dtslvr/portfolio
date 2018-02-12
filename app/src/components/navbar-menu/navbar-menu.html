@@ -1,16 +1,13 @@
 <ion-list>
-  <ion-item>
+  <button ion-item (click)="goToSettingsPage()">
+    <ion-icon name="contact" item-start></ion-icon>
     {{userId}}
-  </ion-item>
-  <ion-item>
-    <ion-label>Redacted Mode</ion-label>
-    <ion-checkbox [(ngModel)]="isRedactedMode" (ionChange)="updateIsRedactedMode()"></ion-checkbox>
-  </ion-item>
+  </button>
     <button ion-item (click)="logout()">
       <ion-icon name="log-out" item-start></ion-icon>
       Logout
     </button>
   <ion-item>
-    Version {{config.version}}
+    Version {{version}}
   </ion-item>
 </ion-list>

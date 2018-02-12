@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
+import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 import { TabsPage } from '../tabs/tabs';
-import * as store from 'store';
 
 @Component({
   selector: 'page-landing',
@@ -14,12 +14,13 @@ export class LandingPage {
   };
 
   constructor(
-    public navCtrl: NavController
+    private navCtrl: NavController,
+    private settingsService: SettingsServiceProvider
   ) {
   }
 
   public doSignup() {
-    store.set('userId', this.account.userId.toLowerCase());
+    this.settingsService.setUserId(this.account.userId);
     this.navCtrl.setRoot(TabsPage);
   }
 

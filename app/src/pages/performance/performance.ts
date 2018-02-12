@@ -1,5 +1,4 @@
-import { Component, Inject, ViewChild } from '@angular/core';
-import { APP_CONFIG, IAppConfig } from '../../app/app.config';
+import { Component, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
 import { NavbarMenu } from '../../components/navbar-menu/navbar-menu'
 import { LoadingController, NavController, PopoverController, ToastController } from 'ionic-angular';
@@ -26,7 +25,6 @@ export class PerformancePage {
   private unsubscribeSubject: Subject<void> = new Subject<void>();
 
   constructor(
-    @Inject(APP_CONFIG) private config: IAppConfig,
     public loadingCtrl: LoadingController,
     public navCtrl: NavController,
     public popoverCtrl: PopoverController,
@@ -44,7 +42,7 @@ export class PerformancePage {
   ionViewDidLoad() {
     // listen to the service worker promise in index.html to see if there has been a new update.
     // condition: the service-worker.js needs to have some kind of change - e.g. increment CACHE_VERSION.
-    window['isUpdateAvailable']
+    /*window['isUpdateAvailable']
       .then(isAvailable => {
         if (isAvailable) {
           const toast = this.toastCtrl.create({
@@ -54,7 +52,7 @@ export class PerformancePage {
           });
           toast.present();
         }
-      });
+      });*/
   }
 
   ionViewDidEnter() {
@@ -80,6 +78,10 @@ export class PerformancePage {
 
   private initializeChart() {
     const performanceSeries = this.portfolioService.getPerformanceSeries();
+
+    if (performanceSeries.data.length < 2) {
+      return;
+    }
 
     const lineChart = this.lineCanvasPerformanceSeries.nativeElement.getContext('2d');
 
@@ -150,12 +152,23 @@ export class PerformancePage {
 
     loading.present();
 
-    this.portfolioService.load(false)
+    this.portfolioService.load(true)
     .then(data => {
       this.quotes = data.quotes;
       this.volume = data.volume;
 
-      this.initializeChart();
+      if (this.quotes.length <= 0) {
+        const toast = this.toastCtrl.create({
+          message: 'Please press the Transactions tab in the bottom to add your first transaction.',
+          position: 'top',
+          dismissOnPageChange: true,
+          showCloseButton: true,
+          closeButtonText: 'OK'
+        });
+        toast.present();
+      } else {
+        this.initializeChart();
+      }
 
       loading.dismiss();
     })

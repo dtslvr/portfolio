@@ -9,22 +9,24 @@ page-transactions {
     background-color: transparent !important;
   }
 
-  ion-icon.transaction {
-    color: #ccc;
-    font-size: 1.6em;
-    line-height: 40px;
-    margin-right: 0;
-    width: 30px;
-    text-align: center;
+  ion-icon {
+    &.transaction {
+      color: #ccc;
+      font-size: 1.6em;
+      line-height: 40px;
+      margin-right: 0;
+      width: 30px;
+      text-align: center;
 
-    &.bonus,
-    &.buy,
-    &.dividend {
-      color: color($colors, secondary, base);
-    }
+      &.bonus,
+      &.buy,
+      &.dividend {
+        color: color($colors, secondary, base);
+      }
 
-    &.sell {
-      color: color($colors, danger, base);
+      &.sell {
+        color: color($colors, danger, base);
+      }
     }
   }
 
@@ -35,28 +37,31 @@ page-transactions {
       margin-bottom: 0 !important;
     }
 
+    ion-item {
+      .item-inner {
+        margin-left: 4px !important;
+      }
+    }
+
+    ion-item-options {
+      button {
+        &.delete {
+          min-width: 56px;
+        }
+      }
+    }
+
     ion-list-header {
       ion-label {
         margin-bottom: 0 !important;
       }
     }
 
-    ion-item {
-      .item-inner {
-        margin-left: 4px !important;
-      }
-    }
   }
 
   .summary {
     line-height: 22px;
     padding: 10px;
-  }
-
-  .total {
-    .fee {
-      color: color($colors, danger, base);
-    }
   }
 
   .type {

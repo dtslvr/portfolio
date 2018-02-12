@@ -59,8 +59,30 @@ package:
 #    - exclude-me-dir/**
 
 functions:
-  portfolio:
-    handler: handler.portfolio
+  deleteTransaction:
+    handler: handler.deleteTransaction
+    events:
+      - http:
+          path: transactions/{id}
+          method: delete
+          request:
+            parameters:
+              paths:
+                id: true
+          cors:
+            origin: '*'
+            headers:
+              - Authorization
+              - Content-Type
+              - Currency
+              - User-Id
+              - X-Amz-Date
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Api-Key
+            allowCredentials: false
+  getPortfolio:
+    handler: handler.getPortfolio
     events:
       - http:
           path: portfolio/{id}
@@ -72,15 +94,35 @@ functions:
           cors:
             origin: '*'
             headers:
-              - Content-Type
-              - X-Amz-Date
               - Authorization
-              - X-Api-Key
+              - Content-Type
+              - Currency
+              - User-Id
+              - X-Amz-Date
               - X-Amz-Security-Token
               - X-Amz-User-Agent
+              - X-Api-Key
             allowCredentials: false
-  transactions:
-    handler: handler.transactions
+  getSymbols:
+    handler: handler.getSymbols
+    events:
+      - http:
+          path: symbols
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Authorization
+              - Content-Type
+              - Currency
+              - User-Id
+              - X-Amz-Date
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Api-Key
+            allowCredentials: false
+  getTransactions:
+    handler: handler.getTransactions
     events:
       - http:
           path: transactions/{id}
@@ -92,12 +134,32 @@ functions:
           cors:
             origin: '*'
             headers:
-              - Content-Type
-              - X-Amz-Date
               - Authorization
-              - X-Api-Key
+              - Content-Type
+              - Currency
+              - User-Id
+              - X-Amz-Date
               - X-Amz-Security-Token
               - X-Amz-User-Agent
+              - X-Api-Key
+            allowCredentials: false
+  postTransaction:
+    handler: handler.postTransaction
+    events:
+      - http:
+          path: transactions
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Authorization
+              - Content-Type
+              - Currency
+              - User-Id
+              - X-Amz-Date
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Api-Key
             allowCredentials: false
 
 #    The following are a few example events you can configure

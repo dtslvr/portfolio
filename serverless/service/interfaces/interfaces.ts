@@ -4,6 +4,7 @@ export interface ITransaction {
   currency: string;
   date: string;
   fee: number;
+  id?: string;
   quantity: number;
   symbol: string;
   type: TransactionType;

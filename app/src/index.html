@@ -12,7 +12,7 @@
   <meta name="theme-color" content="#4e8ef7">
 
   <!-- cordova.js required for cordova apps -->
-  <!-- <script src="cordova.js"></script> -->
+  <script src="cordova.js"></script>
 
   <!-- un-comment this code to enable service worker
   <script>
@@ -23,7 +23,7 @@
     }
   </script>-->
 
-  <script>
+  <!--<script>
     // make the whole serviceworker process into a promise so later on we can
     // listen to it and in case new content is available a toast will be shown
     window.isUpdateAvailable = new Promise(function(resolve, reject) {
@@ -52,7 +52,7 @@
           .catch(err => console.error('[SW ERROR]', err));
       }
     });
-  </script>
+  </script>-->
 
   <link href="build/main.css" rel="stylesheet">
 

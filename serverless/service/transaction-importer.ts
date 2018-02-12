@@ -2,7 +2,7 @@ import { awsManager } from './aws-manager';
 import { config } from '../config/config';
 import { helper } from './helper';
 import { coinbaseImporter } from './importer/coinbase/coinbase-importer';
-import { concat, last, sortBy } from 'lodash';
+import { concat, last, reject as rejectArray, sortBy } from 'lodash';
 import * as moment from 'moment';
 import * as Papa from 'papaparse';
 import * as path from 'path';
@@ -12,12 +12,68 @@ import { TransactionType } from '../type/transaction-type';
 
 class TransactionImporter {
 
+  private async addTransaction(aUserId: string, aTransaction): Promise<Transaction> {
+    return new Promise<Transaction>(async (resolve, reject) => {
+      const transaction = new Transaction({
+        currency: aTransaction.currency,
+        date: aTransaction.date,
+        fee: aTransaction.fee,
+        quantity: aTransaction.quantity,
+        symbol: aTransaction.symbol,
+        type: <TransactionType>aTransaction.type,
+        unitPrice: aTransaction.unitPrice
+      });
+
+      const params = {
+        Bucket: config.aws.s3Bucket,
+        Key: `accounts/${aUserId}/transactions.json`
+      };
+
+      awsManager.getS3().getObject(params, (error, data) => {
+        if (error) {
+          return reject(error);
+        }
+
+        const rawTransactions = JSON.parse(data.Body.toString('utf8'));
+
+        rawTransactions.push(transaction.getData());
+
+        const params2 = {
+          Body: JSON.stringify(rawTransactions),
+          Bucket: config.aws.s3Bucket,
+          Key: `accounts/${aUserId}/transactions.json`
+        };
+
+        awsManager.getS3().putObject(params2, (error, data) => {
+          if (error) {
+            return reject(error);
+          }
+
+          resolve(transaction);
+        });
+      });
+    });
+  }
+
+  public async deleteTransaction(aUserId: string, aTransactionId: any) {
+    const userId = aUserId.toLowerCase();
+
+    await this.removeTransaction(userId, aTransactionId)
+    return {
+      statusCode: 200,
+      headers: helper.getCORSHeaders(),
+      body: JSON.stringify({ message: 'OK' })
+    };
+  }
+
   public async getPortfolio(aUserId: string, aDate) {
+    const userId = aUserId.toLowerCase();
+
     return new Promise(async (resolve, reject) => {
       let portfolio = {};
       let transactions: Transaction[] = [];
       try {
-        transactions = await this.loadTransactions(aUserId);
+        transactions = await this.loadTransactions(userId);
       } catch (error) {
         return reject(error);
       }
@@ -88,10 +144,12 @@ class TransactionImporter {
   }
 
   public async getTransactions(aUserId: string) {
+    const userId = aUserId.toLowerCase();
+
     return {
       statusCode: 200,
       headers: helper.getCORSHeaders(),
-      body: JSON.stringify(await this.loadTransactions(aUserId))
+      body: JSON.stringify(await this.loadTransactions(userId))
     };
   }
 
@@ -99,12 +157,12 @@ class TransactionImporter {
     const portfolioYahoo = {};
     const yahooSymbol = {
       '8GC': '8GC.F', // '8GC.DE'
-      'BTC': 'BTC-EUR',
+      'BABA': 'BABA',
+      'CSSMIM.SW': 'CSSMIM.SW',
       'GALN': 'GALN.VX',
-      'ETH': 'ETH-EUR',
-      'LTC': 'LTC-EUR',
       'NNN1': 'NNN1.F',
       'NOVC': 'NOVA.DE',
+      'QCOM': 'QCOM',
       'VIFN': 'VIFN.VX',
       'VOW3': 'VOW3.DE',
       'ZGLD': 'ZGLD.SW'
@@ -114,8 +172,8 @@ class TransactionImporter {
       if (yahooSymbol[key]) {
         portfolioYahoo[yahooSymbol[key]] = portfolio[key];
       } else {
-        // use the same key
-        portfolioYahoo[key] = portfolio[key];
+        // add currency for cryptocurrencies
+        portfolioYahoo[`${key}-USD`] = portfolio[key];
       }
     }
 
@@ -159,7 +217,23 @@ class TransactionImporter {
 
       awsManager.getS3().getObject(params, (error, data) => {
         if (error) {
-          return reject(error);
+          if (error.statusCode === 404) {
+            var params = {
+              Bucket: config.aws.s3Bucket,
+              Key: `accounts/${aUserId}/transactions.json`,
+              Body: JSON.stringify([]),
+            };
+            var putObjectPromise = awsManager.getS3().putObject(params).promise();
+            putObjectPromise.then(function(data) {
+              return resolve([]);
+            }).catch(function(error) {
+              return reject(error);
+            });
+          } else {
+            return reject(error);
+          }
+
+          return;
         }
 
         const rawTransactions = JSON.parse(data.Body.toString('utf8'));
@@ -169,6 +243,7 @@ class TransactionImporter {
             currency: rawTransaction.currency,
             date: rawTransaction.date,
             fee: rawTransaction.fee,
+            id: rawTransaction.id,
             quantity: rawTransaction.quantity,
             symbol: rawTransaction.symbol,
             type: <TransactionType>rawTransaction.type,
@@ -179,6 +254,51 @@ class TransactionImporter {
         });
 
         resolve(transactions);
+      });
+    });
+  }
+
+  public async postTransaction(aUserId: string, aTransaction: any) {
+    const userId = aUserId.toLowerCase();
+
+    return {
+      statusCode: 200,
+      headers: helper.getCORSHeaders(),
+      body: JSON.stringify(await this.addTransaction(userId, aTransaction))
+    };
+  }
+
+  private async removeTransaction(aUserId: string, aTransactionId: string): Promise<any> {
+    return new Promise<Transaction>(async (resolve, reject) => {
+      const params = {
+        Bucket: config.aws.s3Bucket,
+        Key: `accounts/${aUserId}/transactions.json`
+      };
+
+      awsManager.getS3().getObject(params, (error, data) => {
+        if (error) {
+          return reject(error);
+        }
+
+        let rawTransactions = JSON.parse(data.Body.toString('utf8'));
+
+        rawTransactions = rejectArray(rawTransactions, {
+          id: aTransactionId
+        });
+
+        const params2 = {
+          Body: JSON.stringify(rawTransactions),
+          Bucket: config.aws.s3Bucket,
+          Key: `accounts/${aUserId}/transactions.json`
+        };
+
+        awsManager.getS3().putObject(params2, (error, data) => {
+          if (error) {
+            return reject(error);
+          }
+
+          resolve();
+        });
       });
     });
   }
