@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
 import { NavbarMenu } from '../../components/navbar-menu/navbar-menu'
 import { LoadingController, NavController, PopoverController, ToastController } from 'ionic-angular';
+import * as moment from 'moment';
+import { Api } from '../../providers/api';
 import { PortfolioServiceProvider } from '../../providers/portfolio-service/portfolio-service';
 import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 import { Subject } from 'rxjs/Rx';
@@ -17,6 +19,7 @@ export class PerformancePage {
 
   public TREND_EQUAL_THRESHOLD = 0.001; // 0.1%
 
+  public chartData: any = {};
   public isRedactedMode: boolean;
   public mode = 'today';
   public quotes: any;
@@ -25,6 +28,7 @@ export class PerformancePage {
   private unsubscribeSubject: Subject<void> = new Subject<void>();
 
   constructor(
+    private api: Api,
     public loadingCtrl: LoadingController,
     public navCtrl: NavController,
     public popoverCtrl: PopoverController,
@@ -57,6 +61,23 @@ export class PerformancePage {
 
   ionViewDidEnter() {
     this.loadPerformance();
+
+    this.api.getChart()
+    .then((data) => {
+      const returnValue = {
+        data: [],
+        labels: []
+      };
+
+      for (var key in data) {
+        returnValue.data.push(data[key].price);
+        returnValue.labels.push(moment(key, 'YYYYMMDD').toDate());
+      }
+
+      this.chartData = returnValue;
+
+      this.initializeChart();
+    });
   }
 
   public doRefresh(refresher) {
@@ -77,12 +98,6 @@ export class PerformancePage {
   }
 
   private initializeChart() {
-    const performanceSeries = this.portfolioService.getPerformanceSeries();
-
-    if (performanceSeries.data.length < 2) {
-      return;
-    }
-
     const lineChart = this.lineCanvasPerformanceSeries.nativeElement.getContext('2d');
 
     const gradientBackground = lineChart.createLinearGradient(0, 0, 0, 200);
@@ -96,12 +111,12 @@ export class PerformancePage {
     new Chart(this.lineCanvasPerformanceSeries.nativeElement, {
       type: 'line',
       data: {
-        labels: performanceSeries.labels,
+        labels: this.chartData.labels,
         datasets: [
           {
             backgroundColor: gradientBackground,
             borderColor: gradientStroke,
-            data: performanceSeries.data
+            data: this.chartData.data
           }
         ]
       },
@@ -166,8 +181,6 @@ export class PerformancePage {
           closeButtonText: 'OK'
         });
         toast.present();
-      } else {
-        this.initializeChart();
       }
 
       loading.dismiss();

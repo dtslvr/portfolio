@@ -5,14 +5,26 @@ import * as store from 'store';
 @Injectable()
 export class SettingsServiceProvider {
 
+  private chartDateRange: string;
   private currency: string;
   private isRedactedMode: boolean;
+  private subjectChartDateRange = new BehaviorSubject<string>(null);
   private subjectCurrency = new BehaviorSubject<string>(null);
   private subjectIsRedactedMode = new BehaviorSubject<boolean>(null);
 
   constructor() {
-    this.setIsRedactedMode(store.get('isRedactedMode') || false);
+    this.setChartDateRange(store.get('chartDateRange') || 'MAX');
     this.setCurrency(store.get('currency') || 'USD');
+    this.setIsRedactedMode(store.get('isRedactedMode') || false);
+  }
+
+  public getChartDateRanges() {
+    return [
+      'YTD',
+      '1Y',
+      '5Y',
+      'MAX'
+    ];
   }
 
   public getCurrencies() {
@@ -21,6 +33,10 @@ export class SettingsServiceProvider {
       'EUR',
       'USD'
     ];
+  }
+
+  public getChartDateRange() {
+    return this.subjectChartDateRange.asObservable();
   }
 
   public getCurrency() {
@@ -37,6 +53,12 @@ export class SettingsServiceProvider {
 
   public removeUserId() {
     store.remove('userId');
+  }
+
+  public setChartDateRange(aChartDateRange) {
+    store.set('chartDateRange', aChartDateRange);
+    this.chartDateRange = store.get('chartDateRange');
+    this.subjectChartDateRange.next(this.chartDateRange);
   }
 
   public setCurrency(aCurrency) {

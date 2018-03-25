@@ -81,6 +81,28 @@ functions:
               - X-Amz-User-Agent
               - X-Api-Key
             allowCredentials: false
+  getChart:
+    handler: handler.getChart
+    events:
+      - http:
+          path: chart/{id}
+          method: get
+          request:
+            parameters:
+              paths:
+                id: true
+          cors:
+            origin: '*'
+            headers:
+              - Authorization
+              - Content-Type
+              - Currency
+              - User-Id
+              - X-Amz-Date
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Api-Key
+            allowCredentials: false
   getPortfolio:
     handler: handler.getPortfolio
     events:

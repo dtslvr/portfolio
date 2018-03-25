@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
 import { APP_CONFIG, IAppConfig } from '../app/app.config';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { SettingsServiceProvider } from './settings-service/settings-service';
@@ -20,7 +20,7 @@ export class Api {
     private settingsService: SettingsServiceProvider
   ) {
     if (this.config.develMode) {
-      this.backendUri = 'http://localhost:3000';
+      this.backendUri = 'http://localhost:3001';
     } else {
       this.backendUri = this.config.backendUri;
     }
@@ -30,6 +30,29 @@ export class Api {
       .subscribe((symbols) => {
         this.subjectSymbols.next(symbols);
       });
+  }
+
+  public getChart() {
+    const params = new URLSearchParams();
+    params.set('range', store.get('chartDateRange'));
+
+    const options = new RequestOptions();
+    options.headers = this.getHeaders();
+    options.search = params;
+
+    // don't have the data yet
+    return new Promise((resolve) => {
+      // We're using Angular HTTP provider to request the data,
+      // then on the response, it'll map the JSON data to a parsed JS object.
+      // Next, we process the data and resolve the promise with the new data.
+      this.http.get(`${this.backendUri}/chart/${this.settingsService.getUserId()}`, options)
+        .map(res => res.json())
+        .subscribe(data => {
+          // we've got back the raw data, now generate the core schedule data
+          // and save the data for later reference
+          resolve(data);
+        });
+    });
   }
 
   public getHeaders() {

@@ -12,6 +12,8 @@ import { TransactionType } from '../type/transaction-type';
 
 class TransactionImporter {
 
+  private transactions: Transaction[];
+
   private async addTransaction(aUserId: string, aTransaction): Promise<Transaction> {
     return new Promise<Transaction>(async (resolve, reject) => {
       const transaction = new Transaction({
@@ -68,8 +70,9 @@ class TransactionImporter {
 
   public async getPortfolio(aUserId: string, aDate) {
     const userId = aUserId.toLowerCase();
+    let minimumDate = moment().toISOString();
 
-    return new Promise(async (resolve, reject) => {
+    return new Promise<any>(async (resolve, reject) => {
       let portfolio = {};
       let transactions: Transaction[] = [];
       try {
@@ -115,6 +118,10 @@ class TransactionImporter {
               portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
             }
           }
+
+          if (moment(transaction.getDate()).isBefore(minimumDate)) {
+            minimumDate = transaction.getDate();
+          }
         }
       });
 
@@ -139,7 +146,10 @@ class TransactionImporter {
         portfolio[key].averagePrice = (sum / total);
       }
 
-      resolve(portfolio);
+      resolve({
+        portfolio,
+        startDate: minimumDate
+      });
     });
   }
 
@@ -209,52 +219,56 @@ class TransactionImporter {
 
   private async loadTransactions(aUserId: string): Promise<Transaction[]> {
     return new Promise<Transaction[]>(async (resolve, reject) => {
-      const transactions: Transaction[] = [];
-      const params = {
-        Bucket: config.aws.s3Bucket,
-        Key: `accounts/${aUserId}/transactions.json`
-      };
+      if (this.transactions) {
+        resolve(this.transactions);
+      } else {
+        this.transactions = [];
+        const params = {
+          Bucket: config.aws.s3Bucket,
+          Key: `accounts/${aUserId}/transactions.json`
+        };
 
-      awsManager.getS3().getObject(params, (error, data) => {
-        if (error) {
-          if (error.statusCode === 404) {
-            var params = {
-              Bucket: config.aws.s3Bucket,
-              Key: `accounts/${aUserId}/transactions.json`,
-              Body: JSON.stringify([]),
-            };
-            var putObjectPromise = awsManager.getS3().putObject(params).promise();
-            putObjectPromise.then(function(data) {
-              return resolve([]);
-            }).catch(function(error) {
+        awsManager.getS3().getObject(params, (error, data) => {
+          if (error) {
+            if (error.statusCode === 404) {
+              var params = {
+                Bucket: config.aws.s3Bucket,
+                Key: `accounts/${aUserId}/transactions.json`,
+                Body: JSON.stringify([]),
+              };
+              var putObjectPromise = awsManager.getS3().putObject(params).promise();
+              putObjectPromise.then(function(data) {
+                return resolve([]);
+              }).catch(function(error) {
+                return reject(error);
+              });
+            } else {
               return reject(error);
-            });
-          } else {
-            return reject(error);
+            }
+
+            return;
           }
 
-          return;
-        }
+          const rawTransactions = JSON.parse(data.Body.toString('utf8'));
 
-        const rawTransactions = JSON.parse(data.Body.toString('utf8'));
+          rawTransactions.forEach((rawTransaction) => {
+            const transaction = new Transaction({
+              currency: rawTransaction.currency,
+              date: rawTransaction.date,
+              fee: rawTransaction.fee,
+              id: rawTransaction.id,
+              quantity: rawTransaction.quantity,
+              symbol: rawTransaction.symbol,
+              type: <TransactionType>rawTransaction.type,
+              unitPrice: rawTransaction.unitPrice
+            });
 
-        rawTransactions.forEach((rawTransaction) => {
-          const transaction = new Transaction({
-            currency: rawTransaction.currency,
-            date: rawTransaction.date,
-            fee: rawTransaction.fee,
-            id: rawTransaction.id,
-            quantity: rawTransaction.quantity,
-            symbol: rawTransaction.symbol,
-            type: <TransactionType>rawTransaction.type,
-            unitPrice: rawTransaction.unitPrice
+            this.transactions.push(transaction);
           });
 
-          transactions.push(transaction);
+          resolve(this.transactions);
         });
-
-        resolve(transactions);
-      });
+      }
     });
   }
 

@@ -18,7 +18,7 @@ export class TransactionsServiceProvider {
     private settingsService: SettingsServiceProvider
   ) {
     if (this.config.develMode) {
-      this.backendUri = 'http://localhost:3000';
+      this.backendUri = 'http://localhost:3001';
     } else {
       this.backendUri = this.config.backendUri;
     }

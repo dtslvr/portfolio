@@ -14,6 +14,12 @@
       </ion-input>
     </ion-item>
     <ion-item>
+      <ion-label color="primary" stacked>Chart Date Range</ion-label>
+      <ion-select [(ngModel)]="settings.chartDateRange" (ionChange)="updateChartDateRange()" name="chartDateRange">
+        <ion-option *ngFor="let chartDateRange of chartDateRanges">{{chartDateRange}}</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
       <ion-label color="primary" stacked>Currency</ion-label>
       <ion-select [(ngModel)]="settings.currency" (ionChange)="updateCurrency()" name="currency">
         <ion-option *ngFor="let currency of currencies">{{currency}}</ion-option>

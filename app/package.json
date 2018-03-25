@@ -1,6 +1,6 @@
 {
   "name": "portfolioApp",
-  "version": "1.5.11",
+  "version": "1.6.0",
   "author": "Thomas Kaul",
   "homepage": "http://www.dotsilver.ch",
   "private": true,
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.1.7",
-    "ionic": "3.19.1",
+    "ionic": "3.20.0",
     "typescript": "2.4.2"
   },
   "description": "Portfolio App",

@@ -19,26 +19,10 @@ export class PortfolioServiceProvider {
     private settingsService: SettingsServiceProvider
   ) {
     if (this.config.develMode) {
-      this.backendUri = 'http://localhost:3000';
+      this.backendUri = 'http://localhost:3001';
     } else {
       this.backendUri = this.config.backendUri;
     }
-  }
-
-  public getPerformanceSeries() {
-    const performanceSeries = store.get('performanceSeries') || {};
-
-    const returnValue = {
-      data: [],
-      labels: []
-    };
-
-    for (var key in performanceSeries) {
-      returnValue.data.push(performanceSeries[key].performance);
-      returnValue.labels.push(moment(key, 'YYYYMMDD').toDate());
-    }
-
-    return returnValue;
   }
 
   public load(isForceLoad: boolean) {
@@ -67,18 +51,8 @@ export class PortfolioServiceProvider {
           // and save the data for later reference
           this.data = data;
 
-          this.updatePerformanceSeries();
-
           resolve(this.data);
         });
     });
   }
-
-  public updatePerformanceSeries() {
-    const currentDay = moment().format('YYYYMMDD');
-    const performanceSeries = store.get('performanceSeries') || {};
-    performanceSeries[currentDay] = this.data.volume.price.allTime;
-    store.set('performanceSeries', performanceSeries);
-  }
-
 }

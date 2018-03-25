@@ -8,11 +8,14 @@ import { Subject } from 'rxjs/Rx';
 })
 export class SettingsPage {
 
+  public chartDateRanges;
   public currencies;
   public isRedactedMode: boolean;
   public settings: {
+    chartDateRange: string
     currency: string
   } = {
+    chartDateRange: null,
     currency: null
   };
   public userId: string;
@@ -22,7 +25,14 @@ export class SettingsPage {
   constructor(
     private settingsService: SettingsServiceProvider
   ) {
+    this.chartDateRanges = this.settingsService.getChartDateRanges();
     this.currencies = this.settingsService.getCurrencies();
+
+    this.settingsService.getChartDateRange()
+    .takeUntil(this.unsubscribeSubject.asObservable())
+    .subscribe((aChartDateRange) => {
+      this.settings.chartDateRange = aChartDateRange;
+    });
 
     this.settingsService.getCurrency()
     .takeUntil(this.unsubscribeSubject.asObservable())
@@ -37,6 +47,11 @@ export class SettingsPage {
     });
 
     this.userId = settingsService.getUserId();
+  }
+
+  public updateChartDateRange() {
+    this.settingsService.setChartDateRange(this.settings.chartDateRange);
+    window.location.reload();
   }
 
   public updateCurrency() {
