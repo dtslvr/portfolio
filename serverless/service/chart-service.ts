@@ -4,7 +4,6 @@ import { find } from 'lodash';
 import * as moment from 'moment';
 
 class ChartService {
-
   public getEmptyResponse() {
     return {
       statusCode: 200,
@@ -41,32 +40,50 @@ class ChartService {
       });
     });
 
-    let response = {};
+    const response = {};
 
     let missingPriceCount = 0;
 
-    for (var timestamp in portfolios) {
+    for (const timestamp in portfolios) {
       let price = 0;
 
-      for (var symbol in portfolios[timestamp].portfolio) {
+      for (const symbol in portfolios[timestamp].portfolio) {
         // Calculate performance
-        if (resultMap && resultMap[symbol] && resultMap[symbol][timestamp] && resultMap[symbol][timestamp].close) {
-          price += portfolios[timestamp].portfolio[symbol].quantity * (resultMap[symbol][timestamp].close - portfolios[timestamp].portfolio[symbol].averagePrice);
+        if (
+          resultMap &&
+          resultMap[symbol] &&
+          resultMap[symbol][timestamp] &&
+          resultMap[symbol][timestamp].close
+        ) {
+          price +=
+            portfolios[timestamp].portfolio[symbol].quantity *
+            (resultMap[symbol][timestamp].close -
+              portfolios[timestamp].portfolio[symbol].averagePrice);
         } else {
           let priceClose = 0;
 
           for (let i = 1; i < 10; i++) {
             // Go back (decrementally) to find an earlier price and fill gaps of weekends
-            let tempTimestamp = moment(timestamp, 'YYYYMMDD').subtract(i, 'days').format('YYYYMMDD');
+            const tempTimestamp = moment(timestamp, 'YYYYMMDD')
+              .subtract(i, 'days')
+              .format('YYYYMMDD');
 
-            if (resultMap && resultMap[symbol] && resultMap[symbol][tempTimestamp] && resultMap[symbol][tempTimestamp].close) {
+            if (
+              resultMap &&
+              resultMap[symbol] &&
+              resultMap[symbol][tempTimestamp] &&
+              resultMap[symbol][tempTimestamp].close
+            ) {
               priceClose = resultMap[symbol][tempTimestamp].close;
               break;
             }
           }
 
           if (priceClose !== 0) {
-            price += portfolios[timestamp].portfolio[symbol].quantity * (priceClose - portfolios[timestamp].portfolio[symbol].averagePrice);
+            price +=
+              portfolios[timestamp].portfolio[symbol].quantity *
+              (priceClose -
+                portfolios[timestamp].portfolio[symbol].averagePrice);
           } else {
             // TODO
             // console.warn(`Warning: ${timestamp} price missing for ${symbol} (using average price)`);
@@ -76,7 +93,7 @@ class ChartService {
         }
       }
 
-      if (price != 0) {
+      if (price !== 0) {
         response[timestamp] = {
           price
         };
@@ -89,7 +106,6 @@ class ChartService {
       body: JSON.stringify(response)
     };
   }
-
 }
 
 export const chartService = new ChartService();

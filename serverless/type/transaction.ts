@@ -4,7 +4,6 @@ import { ITransaction } from '../service/interfaces/interfaces';
 import { TransactionType } from './transaction-type';
 
 export class Transaction {
-
   private baseCurrency: any;
   private currency: string;
   private fee: number;
@@ -31,8 +30,11 @@ export class Transaction {
     this.baseCurrency = {
       currency: exchangeRateDataService.getBaseCurrency(),
       currencySymbol: exchangeRateDataService.getBaseCurrencySymbol(),
-      fee: this.fee * exchangeRateDataService.getRateToBaseCurrency(this.currency),
-      total: this.total * exchangeRateDataService.getRateToBaseCurrency(this.currency)
+      fee:
+        this.fee * exchangeRateDataService.getRateToBaseCurrency(this.currency),
+      total:
+        this.total *
+        exchangeRateDataService.getRateToBaseCurrency(this.currency)
     };
   }
 
@@ -80,5 +82,4 @@ export class Transaction {
   public getUnitPrice() {
     return this.unitPrice;
   }
-
 }

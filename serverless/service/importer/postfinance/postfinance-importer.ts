@@ -7,15 +7,16 @@ import { Transaction } from '../../../type/transaction';
 import { TransactionType } from '../../../type/transaction-type';
 
 class PostfinanceImporter extends AbstractImporter {
-
   public isValid(filePath: string) {
-    return filePath.toLowerCase().includes('postfinance') &&
-      filePath.toLowerCase().includes('csv');
+    return (
+      filePath.toLowerCase().includes('postfinance') &&
+      filePath.toLowerCase().includes('csv')
+    );
   }
 
   public parseFile(filePath): Promise<Transaction[]> {
     return new Promise((resolve, reject) => {
-      let transactions: Transaction[] = [];
+      const transactions: Transaction[] = [];
 
       // Parse local CSV file
       const file = fs.readFileSync(path.join(filePath), 'utf8');
@@ -27,7 +28,7 @@ class PostfinanceImporter extends AbstractImporter {
               const currency = result['Currency'];
               const date = moment(result['Date'], 'DD-MM-YYYY HH:mm:ss');
               const fee = result['Costs'];
-              const quantity = parseFloat(result['Quantity'].replace(/'/g,''));
+              const quantity = parseFloat(result['Quantity'].replace(/'/g, ''));
 
               let transactionType;
               if (result['Transaction'] === 'Corporate Action') {
@@ -43,23 +44,24 @@ class PostfinanceImporter extends AbstractImporter {
               }
 
               const symbol = result['Symbol'];
-              const unitPrice = parseFloat(result['Unit price'].replace(/'/g,''));
+              const unitPrice = parseFloat(
+                result['Unit price'].replace(/'/g, '')
+              );
 
               if (symbol && transactionType) {
                 const transaction = new Transaction({
-                  currency: currency,
+                  currency,
                   date: date.toISOString(),
-                  fee: fee,
-                  quantity: quantity,
-                  symbol: symbol,
+                  fee,
+                  quantity,
+                  symbol,
                   type: transactionType,
-                  unitPrice: unitPrice
+                  unitPrice
                 });
 
                 transactions.push(transaction);
               }
-            } catch (error) {
-            }
+            } catch (error) {}
           });
 
           resolve(transactions);
@@ -67,7 +69,6 @@ class PostfinanceImporter extends AbstractImporter {
       });
     });
   }
-
 }
 
 export const postfinanceImporter = new PostfinanceImporter();

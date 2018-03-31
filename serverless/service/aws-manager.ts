@@ -1,9 +1,7 @@
 import AWS = require('aws-sdk');
 import { config } from '../config/config';
 
-
 class AwsManager {
-
   private s3;
 
   constructor() {
@@ -23,7 +21,6 @@ class AwsManager {
   public getS3() {
     return this.s3;
   }
-
 }
 
 export const awsManager = new AwsManager();

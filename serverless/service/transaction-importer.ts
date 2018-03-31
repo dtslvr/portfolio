@@ -11,10 +11,12 @@ import { Transaction } from '../type/transaction';
 import { TransactionType } from '../type/transaction-type';
 
 class TransactionImporter {
-
   private transactions: Transaction[];
 
-  private async addTransaction(aUserId: string, aTransaction): Promise<Transaction> {
+  private async addTransaction(
+    aUserId: string,
+    aTransaction
+  ): Promise<Transaction> {
     return new Promise<Transaction>(async (resolve, reject) => {
       const transaction = new Transaction({
         currency: aTransaction.currency,
@@ -60,7 +62,7 @@ class TransactionImporter {
   public async deleteTransaction(aUserId: string, aTransactionId: any) {
     const userId = aUserId.toLowerCase();
 
-    await this.removeTransaction(userId, aTransactionId)
+    await this.removeTransaction(userId, aTransactionId);
     return {
       statusCode: 200,
       headers: helper.getCORSHeaders(),
@@ -84,8 +86,11 @@ class TransactionImporter {
       let currentPrice;
 
       transactions.forEach((transaction: Transaction) => {
-        if (transaction.getDate() && transaction.getDate().length > 0 &&
-          moment(transaction.getDate()).isBefore(aDate)) {
+        if (
+          transaction.getDate() &&
+          transaction.getDate().length > 0 &&
+          moment(transaction.getDate()).isBefore(aDate)
+        ) {
           if (transaction.getSymbol() && !portfolio[transaction.getSymbol()]) {
             portfolio[transaction.getSymbol()] = {
               quantity: 0,
@@ -94,28 +99,54 @@ class TransactionImporter {
             };
           }
 
-          if (transaction.getType() === TransactionType.Buy ||
-            transaction.getType() === TransactionType.Split) {
-            portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();
-            portfolio[transaction.getSymbol()].quantities.push(transaction.getQuantity());
-            portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
+          if (
+            transaction.getType() === TransactionType.Buy ||
+            transaction.getType() === TransactionType.Split
+          ) {
+            portfolio[
+              transaction.getSymbol()
+            ].quantity += transaction.getQuantity();
+            portfolio[transaction.getSymbol()].quantities.push(
+              transaction.getQuantity()
+            );
+            portfolio[transaction.getSymbol()].prices.push(
+              transaction.getUnitPrice()
+            );
           } else if (transaction.getType() === TransactionType.Sell) {
-            portfolio[transaction.getSymbol()].quantity -= transaction.getQuantity();
-            portfolio[transaction.getSymbol()].quantities.push(-transaction.getQuantity());
-            portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
-          } else if (transaction.getType() === TransactionType.CorporateAction) {
+            portfolio[
+              transaction.getSymbol()
+            ].quantity -= transaction.getQuantity();
+            portfolio[transaction.getSymbol()].quantities.push(
+              -transaction.getQuantity()
+            );
+            portfolio[transaction.getSymbol()].prices.push(
+              transaction.getUnitPrice()
+            );
+          } else if (
+            transaction.getType() === TransactionType.CorporateAction
+          ) {
             // Rename symbol (move old price to new symbol)
             if (transaction.getQuantity() >= 0) {
-              portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();
-              portfolio[transaction.getSymbol()].quantities.push(transaction.getQuantity());
+              portfolio[
+                transaction.getSymbol()
+              ].quantity += transaction.getQuantity();
+              portfolio[transaction.getSymbol()].quantities.push(
+                transaction.getQuantity()
+              );
               portfolio[transaction.getSymbol()].prices.push(currentPrice);
             } else {
               // Store current prize to add in next round
               currentPrice = last(portfolio[transaction.getSymbol()].prices);
 
-              portfolio[transaction.getSymbol()].quantity += transaction.getQuantity();
-              portfolio[transaction.getSymbol()].quantities.push(transaction.getQuantity());
-              portfolio[transaction.getSymbol()].prices.push(transaction.getUnitPrice());
+              portfolio[
+                transaction.getSymbol()
+              ].quantity += transaction.getQuantity();
+              portfolio[transaction.getSymbol()].quantities.push(
+                transaction.getQuantity()
+              );
+              portfolio[transaction.getSymbol()].prices.push(
+                transaction.getUnitPrice()
+              );
             }
           }
 
@@ -126,24 +157,25 @@ class TransactionImporter {
       });
 
       // Remove items with 0 from portfolio
-      Object.keys(portfolio).forEach((key) => (portfolio[key].quantity === 0) && delete portfolio[key]);
+      Object.keys(portfolio).forEach(
+        (key) => portfolio[key].quantity === 0 && delete portfolio[key]
+      );
 
       portfolio = this.convertPortfolioToYahoo(portfolio);
 
       // calculate averagePrice and total quantity
-      for (var key in portfolio) {
+      for (const key in portfolio) {
         let sum = 0;
         let total = 0;
 
-        portfolio[key].quantities
-        .forEach((quantity, index) => {
+        portfolio[key].quantities.forEach((quantity, index) => {
           if (quantity > 0) {
-            sum += (quantity * portfolio[key].prices[index]);
+            sum += quantity * portfolio[key].prices[index];
             total += quantity;
           }
         });
 
-        portfolio[key].averagePrice = (sum / total);
+        portfolio[key].averagePrice = sum / total;
       }
 
       resolve({
@@ -167,18 +199,18 @@ class TransactionImporter {
     const portfolioYahoo = {};
     const yahooSymbol = {
       '8GC': '8GC.F', // '8GC.DE'
-      'BABA': 'BABA',
+      BABA: 'BABA',
       'CSSMIM.SW': 'CSSMIM.SW',
-      'GALN': 'GALN.VX',
-      'NNN1': 'NNN1.F',
-      'NOVC': 'NOVA.DE',
-      'QCOM': 'QCOM',
-      'VIFN': 'VIFN.VX',
-      'VOW3': 'VOW3.DE',
-      'ZGLD': 'ZGLD.SW'
+      GALN: 'GALN.VX',
+      NNN1: 'NNN1.F',
+      NOVC: 'NOVA.DE',
+      QCOM: 'QCOM',
+      VIFN: 'VIFN.VX',
+      VOW3: 'VOW3.DE',
+      ZGLD: 'ZGLD.SW'
     };
 
-    for (var key in portfolio) {
+    for (const key in portfolio) {
       if (yahooSymbol[key]) {
         portfolioYahoo[yahooSymbol[key]] = portfolio[key];
       } else {
@@ -193,20 +225,28 @@ class TransactionImporter {
   // TODO: use for importing transactions from differnet platforms
   private async importTransactions(): Promise<Transaction[]> {
     return new Promise<Transaction[]>(async (resolve, reject) => {
-      let filePathsPostfinance: string[] = [];
-      let filePathsCoinbase: string[] = [];
+      const filePathsPostfinance: string[] = [];
+      const filePathsCoinbase: string[] = [];
       let transactions: Transaction[] = [];
 
-      helper.recursiveReaddirSync(path.join(__dirname, '..', 'data')).forEach((filePath) => {
-        if (coinbaseImporter.isValid(filePath)) {
-          filePathsCoinbase.push(filePath);
-        } else if (postfinanceImporter.isValid(filePath)) {
-          filePathsPostfinance.push(filePath);
-        }
-      });
+      helper
+        .recursiveReaddirSync(path.join(__dirname, '..', 'data'))
+        .forEach((filePath) => {
+          if (coinbaseImporter.isValid(filePath)) {
+            filePathsCoinbase.push(filePath);
+          } else if (postfinanceImporter.isValid(filePath)) {
+            filePathsPostfinance.push(filePath);
+          }
+        });
 
-      transactions = concat(transactions, await coinbaseImporter.getTransactions(filePathsCoinbase));
-      transactions = concat(transactions, await postfinanceImporter.getTransactions(filePathsPostfinance));
+      transactions = concat(
+        transactions,
+        await coinbaseImporter.getTransactions(filePathsCoinbase)
+      );
+      transactions = concat(
+        transactions,
+        await postfinanceImporter.getTransactions(filePathsPostfinance)
+      );
 
       // sort transactions by date asc
       transactions = sortBy(transactions, (transaction) => {
@@ -231,17 +271,22 @@ class TransactionImporter {
         awsManager.getS3().getObject(params, (error, data) => {
           if (error) {
             if (error.statusCode === 404) {
-              var params = {
+              const params = {
                 Bucket: config.aws.s3Bucket,
                 Key: `accounts/${aUserId}/transactions.json`,
-                Body: JSON.stringify([]),
+                Body: JSON.stringify([])
               };
-              var putObjectPromise = awsManager.getS3().putObject(params).promise();
-              putObjectPromise.then((data) => {
-                return resolve([]);
-              }).catch((error) => {
-                return reject(error);
-              });
+              const putObjectPromise = awsManager
+                .getS3()
+                .putObject(params)
+                .promise();
+              putObjectPromise
+                .then((data) => {
+                  return resolve([]);
+                })
+                .catch((error) => {
+                  return reject(error);
+                });
             } else {
               return reject(error);
             }
@@ -282,7 +327,10 @@ class TransactionImporter {
     };
   }
 
-  private async removeTransaction(aUserId: string, aTransactionId: string): Promise<any> {
+  private async removeTransaction(
+    aUserId: string,
+    aTransactionId: string
+  ): Promise<any> {
     return new Promise<Transaction>(async (resolve, reject) => {
       const params = {
         Bucket: config.aws.s3Bucket,
@@ -316,7 +364,6 @@ class TransactionImporter {
       });
     });
   }
-
 }
 
 export const transactionImporter = new TransactionImporter();

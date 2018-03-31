@@ -2,7 +2,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 class Helper {
-
   public capitalizeFirstLetter(aString) {
     if (aString === 'ETF') {
       return aString;
@@ -13,7 +12,7 @@ class Helper {
     }
   }
 
-  public getCORSHeaders () {
+  public getCORSHeaders() {
     return {
       'Access-Control-Allow-Origin': '*', // Required for CORS support to work
       'Access-Control-Allow-Credentials': true, // Required for cookies, authorization headers with HTTPS
@@ -37,7 +36,6 @@ class Helper {
 
     return list;
   }
-
 }
 
 export const helper = new Helper();

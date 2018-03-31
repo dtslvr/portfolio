@@ -2,9 +2,8 @@ import { flattenDeep } from 'lodash';
 import { Transaction } from '../../type/transaction';
 
 export abstract class AbstractImporter {
-
   public getTransactions(filePaths: string[]): Promise<Transaction[]> {
-    let promises: Promise<Transaction[]>[] = [];
+    const promises: Promise<Transaction[]>[] = [];
 
     filePaths.forEach((filePath) => {
       promises.push(this.parseFile(filePath));

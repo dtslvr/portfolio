@@ -7,15 +7,16 @@ import { Transaction } from '../../../type/transaction';
 import { TransactionType } from '../../../type/transaction-type';
 
 class CoinbaseImporter extends AbstractImporter {
-
   public isValid(filePath: string) {
-    return filePath.toLowerCase().includes('coinbase') &&
-      filePath.toLowerCase().includes('csv');
+    return (
+      filePath.toLowerCase().includes('coinbase') &&
+      filePath.toLowerCase().includes('csv')
+    );
   }
 
   public parseFile(filePath): Promise<Transaction[]> {
     return new Promise((resolve, reject) => {
-      let transactions: Transaction[] = [];
+      const transactions: Transaction[] = [];
 
       // Parse local CSV file
       const file = fs.readFileSync(path.join(filePath), 'utf8');
@@ -49,13 +50,13 @@ class CoinbaseImporter extends AbstractImporter {
 
                 if (symbol && transactionType) {
                   const newTransaction = new Transaction({
-                    currency: currency,
+                    currency,
                     date: date.toISOString(),
                     fee: fee || 0,
                     quantity: Math.abs(quantity),
-                    symbol: symbol,
+                    symbol,
                     type: transactionType,
-                    unitPrice: Math.abs((price - fee) / quantity) || 0
+                    unitPrice: Math.abs((price - fee) / quantity) || 0
                   });
 
                   transactions.push(newTransaction);
@@ -71,7 +72,6 @@ class CoinbaseImporter extends AbstractImporter {
       });
     });
   }
-
 }
 
 export const coinbaseImporter = new CoinbaseImporter();

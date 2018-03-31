@@ -5,15 +5,19 @@
   "main": "index.js",
   "scripts": {
     "deploy": "./node_modules/.bin/sls deploy",
+    "prettier": "prettier --config .prettierrc --write '**/*.ts'",
     "serve": "./node_modules/.bin/sls offline start --port 3001"
   },
   "author": "Thomas Kaul",
   "devDependencies": {
     "@types/node": "8.0.24",
     "aws-sdk": "2.188.0",
+    "prettier": "1.10.2",
     "serverless": "1.26.1",
     "serverless-offline": "3.18.0",
-    "serverless-plugin-typescript": "1.1.0"
+    "serverless-plugin-typescript": "1.1.0",
+    "tslint": "4.5.1",
+    "tslint-config-airbnb": "1.1.1"
   },
   "dependencies": {
     "lodash": "4.17.4",

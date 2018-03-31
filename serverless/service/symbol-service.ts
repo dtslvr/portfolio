@@ -11,7 +11,6 @@ import { Transaction } from '../type/transaction';
 import { TransactionType } from '../type/transaction-type';
 
 class SymbolService {
-
   public async loadSymbols() {
     return {
       statusCode: 200,
@@ -40,7 +39,6 @@ class SymbolService {
       });
     });
   }
-
 }
 
 export const symbolService = new SymbolService();

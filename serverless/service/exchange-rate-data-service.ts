@@ -1,7 +1,6 @@
 import * as yahooFinance from 'yahoo-finance';
 
 class ExchangeRateDataService {
-
   private baseCurrency;
   private baseCurrencySymbol;
   private currencies = {};
@@ -15,7 +14,7 @@ class ExchangeRateDataService {
   }
 
   public loadCurrencies(aBaseCurrency?: string) {
-    this.baseCurrency = aBaseCurrency || 'USD';
+    this.baseCurrency = aBaseCurrency || 'USD';
     this.baseCurrencySymbol = aBaseCurrency || 'USD';
 
     this.addPair('CHF');
@@ -23,19 +22,22 @@ class ExchangeRateDataService {
     this.addPair('USD');
 
     return new Promise((resolve, reject) => {
-      yahooFinance.quote({
-        symbols: this.pairs,
-        modules: ['price']
-      }).then((result) => {
-        for (var pair in result) {
-          this.currencies[pair.replace('=X', '')] =
-            result[pair].price.regularMarketPrice;
-        }
+      yahooFinance
+        .quote({
+          symbols: this.pairs,
+          modules: ['price']
+        })
+        .then((result) => {
+          for (const pair in result) {
+            this.currencies[pair.replace('=X', '')] =
+              result[pair].price.regularMarketPrice;
+          }
 
-        resolve();
-      }).catch((error) => {
-        reject();
-      });
+          resolve();
+        })
+        .catch((error) => {
+          reject();
+        });
     });
   }
 
@@ -55,7 +57,6 @@ class ExchangeRateDataService {
   public getBaseCurrencySymbol() {
     return this.baseCurrencySymbol;
   }
-
 }
 
 export const exchangeRateDataService = new ExchangeRateDataService();
