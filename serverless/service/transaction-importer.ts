@@ -237,9 +237,9 @@ class TransactionImporter {
                 Body: JSON.stringify([]),
               };
               var putObjectPromise = awsManager.getS3().putObject(params).promise();
-              putObjectPromise.then(function(data) {
+              putObjectPromise.then((data) => {
                 return resolve([]);
-              }).catch(function(error) {
+              }).catch((error) => {
                 return reject(error);
               });
             } else {

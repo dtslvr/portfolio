@@ -3,7 +3,10 @@
   "version": "1.6.10",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "deploy": "./node_modules/.bin/sls deploy",
+    "serve": "./node_modules/.bin/sls offline start --port 3001"
+  },
   "author": "Thomas Kaul",
   "devDependencies": {
     "@types/node": "8.0.24",
@@ -14,7 +17,7 @@
   },
   "dependencies": {
     "lodash": "4.17.4",
-    "moment": "2.18.1",
+    "moment": "2.21.0",
     "papaparse": "4.3.3",
     "path": "0.12.7",
     "uuid": "3.2.1",

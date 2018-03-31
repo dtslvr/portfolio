@@ -16,11 +16,17 @@ export async function deleteTransaction(event, context, callback) {
     result[key.toLowerCase()] = val
   });
 
-  callback(null, await transactionImporter
+  return callback(null, await transactionImporter
     .deleteTransaction(event.headers['user-id'], event.pathParameters.id));
 };
 
 export async function getChart(event, context, callback) {
+  // make headers lowercase
+  const headers = Object.keys(event.headers);
+  event.headers = transform(event.headers, (result, val, key) => {
+    result[key.toLowerCase()] = val
+  });
+
   const NUMBER_OF_DATAPOINTS = 200;
   const portfolios = {};
   const response = await transactionImporter.getPortfolio(event.pathParameters.id, moment());
@@ -48,11 +54,21 @@ export async function getChart(event, context, callback) {
     steps = Math.round(dayCount / NUMBER_OF_DATAPOINTS);
   }
 
-  while (currentDate.format('YYYYMMDD') < moment().format('YYYYMMDD')) {
-    currentPortfolio = await transactionImporter.getPortfolio(event.pathParameters.id, currentDate);
-    symbols = symbols.concat(Object.keys(currentPortfolio.portfolio));
-    portfolios[currentDate.format('YYYYMMDD')] = currentPortfolio;
-    currentDate = currentDate.add(steps, 'days');
+  try {
+    while (currentDate.format('YYYYMMDD') < moment().format('YYYYMMDD')) {
+      currentPortfolio = await transactionImporter.getPortfolio(event.pathParameters.id, currentDate);
+      symbols = symbols.concat(Object.keys(currentPortfolio.portfolio));
+      portfolios[currentDate.format('YYYYMMDD')] = currentPortfolio;
+      currentDate = currentDate.add(steps, 'days');
+    }
+  } catch (error) {
+    return callback(null, {
+      statusCode: error.statusCode,
+      headers: helper.getCORSHeaders(),
+      body: JSON.stringify({
+        message: error.message
+      })
+    });
   }
 
   // Add today
@@ -63,28 +79,26 @@ export async function getChart(event, context, callback) {
   // unique
   symbols = Array.from(new Set(symbols));
 
-  try {
-    yahooFinance.historical({
-      symbols: symbols,
-      from: moment(response.startDate).format('YYYY-MM-DD'),
-      to: moment().format('YYYY-MM-DD')
-    }).then((result) => {
-      callback(null, chartService.getResponse(portfolios, result));
-    });
-  } catch (error) {
-    console.log(error);
-    callback((null), {
-      statusCode: error.statusCode,
-      headers: {
-        'Access-Control-Allow-Origin' : '*', // Required for CORS support to work
-        'Content-Type': 'application/json'
-      },
-      body: {
-        message: error.message
-      }
-    });
-    return;
-  }
+  yahooFinance.historical({
+    symbols: symbols,
+    from: moment(response.startDate).format('YYYY-MM-DD'),
+    to: moment().format('YYYY-MM-DD')
+  })
+  .then((result) => {
+    return callback(null, chartService.getResponse(portfolios, result));
+  })
+  .catch((error) => {
+    const resp = {
+      statusCode: 200,
+      body: JSON.stringify({
+        currentPortfolio: currentPortfolio,
+        id: event.pathParameters.id,
+        error: error
+      }),
+      headers: helper.getCORSHeaders()
+    };
+    return callback(null, resp);
+  });
 };
 
 export async function getPortfolio(event, context, callback) {
@@ -102,17 +116,13 @@ export async function getPortfolio(event, context, callback) {
       const response = await transactionImporter.getPortfolio(event.pathParameters.id, moment());
       portfolio = response.portfolio;
     } catch (error) {
-      callback((null), {
+      return callback((null), {
         statusCode: error.statusCode,
-        headers: {
-          'Access-Control-Allow-Origin' : '*', // Required for CORS support to work
-          'Content-Type': 'application/json'
-        },
+        headers: helper.getCORSHeaders(),
         body: {
           message: error.message
         }
       });
-      return;
     }
 
     const symbols = Object.keys(portfolio);
@@ -122,56 +132,41 @@ export async function getPortfolio(event, context, callback) {
         symbols: symbols,
         modules: ['price', 'summaryProfile']
       }).then((result) => {
-        callback(null, portfolioService.getResponse(portfolio, result));
+        return callback(null, portfolioService.getResponse(portfolio, result));
       }).catch((error) => {
-        // callback(new Error(`[500] ${error}`));
-        callback((null), {
+        return callback((null), {
           statusCode: 500,
-          headers: {
-            'Access-Control-Allow-Origin' : '*', // Required for CORS support to work
-            'Content-Type': 'application/json'
-          },
+          headers: helper.getCORSHeaders(),
           body: {
             message: error
           }
         });
-        return;
       });
     } else {
-      callback(null, portfolioService.getEmptyResponse());
+      return callback(null, portfolioService.getEmptyResponse());
     }
   }).catch((error) => {
-    // callback(new Error(`[500] ${error}`));
-    callback((null), {
+    return callback((null), {
       statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin' : '*', // Required for CORS support to work
-        'Content-Type': 'application/json'
-      },
+      headers: helper.getCORSHeaders(),
       body: {
         message: error
       }
     });
-    return;
   });
 };
 
 export async function getSymbols(event, context, callback) {
   try {
-    callback(null, await symbolService.loadSymbols());
+    return callback(null, await symbolService.loadSymbols());
   } catch(error) {
-    console.log(error);
-    callback((null), {
+    return callback(null, {
       statusCode: error.statusCode,
-      headers: {
-        'Access-Control-Allow-Origin' : '*', // Required for CORS support to work
-        'Content-Type': 'application/json'
-      },
+      headers: helper.getCORSHeaders(),
       body: {
         message: error.message
       }
     });
-    return;
   }
 };
 
@@ -181,22 +176,17 @@ export async function getTransactions(event, context, callback) {
     result[key.toLowerCase()] = val
   });
 
-  exchangeRateDataService
-    .loadCurrencies(event.headers['currency']).then(async () => {
-    callback(null, await transactionImporter.getTransactions(event.pathParameters.id));
+  exchangeRateDataService.loadCurrencies(event.headers['currency'])
+  .then(async () => {
+    return callback(null, await transactionImporter.getTransactions(event.pathParameters.id));
   }).catch((error) => {
-    // callback(new Error(`[500] ${error}`));
-    callback(null, {
+    return callback(null, {
       statusCode: 500,
-      headers: {
-        'Access-Control-Allow-Origin': '*', // Required for CORS support to work
-        'Content-Type': 'application/json'
-      },
+      headers: helper.getCORSHeaders(),
       body: {
         message: error
       }
     });
-    return;
   });
 };
 
@@ -206,5 +196,5 @@ export async function postTransaction(event, context, callback) {
     result[key.toLowerCase()] = val
   });
 
-  callback(null, await transactionImporter.postTransaction(event.headers['user-id'], JSON.parse(event.body)));
+  return callback(null, await transactionImporter.postTransaction(event.headers['user-id'], JSON.parse(event.body)));
 };

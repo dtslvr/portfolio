@@ -2,10 +2,8 @@ import { Inject, Injectable } from '@angular/core';
 import { Http, RequestOptions } from '@angular/http';
 import { Api } from '../api';
 import { APP_CONFIG, IAppConfig } from '../../app/app.config';
-import * as moment from 'moment';
 import { Observable } from 'rxjs/Rx';
 import { SettingsServiceProvider } from '../settings-service/settings-service';
-import * as store from 'store';
 
 @Injectable()
 export class PortfolioServiceProvider {

@@ -68,7 +68,8 @@ class ChartService {
           if (priceClose !== 0) {
             price += portfolios[timestamp].portfolio[symbol].quantity * (priceClose - portfolios[timestamp].portfolio[symbol].averagePrice);
           } else {
-            console.warn(`Warning: ${timestamp} price missing for ${symbol} (using average price)`);
+            // TODO
+            // console.warn(`Warning: ${timestamp} price missing for ${symbol} (using average price)`);
             price += 0;
             missingPriceCount++;
           }
