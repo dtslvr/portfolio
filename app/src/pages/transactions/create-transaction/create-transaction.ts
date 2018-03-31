@@ -1,6 +1,11 @@
 import { Component } from '@angular/core';
 import { Api } from '../../../providers/api';
-import { LoadingController, NavController, NavParams, PopoverController } from 'ionic-angular';
+import {
+  LoadingController,
+  NavController,
+  NavParams,
+  PopoverController
+} from 'ionic-angular';
 import { SettingsServiceProvider } from '../../../providers/settings-service/settings-service';
 import { TransactionsServiceProvider } from '../../../providers/transactions-service/transactions-service';
 import { Subject } from 'rxjs/Rx';
@@ -10,25 +15,21 @@ import { Subject } from 'rxjs/Rx';
   templateUrl: './create-transaction.html'
 })
 export class CreateTransactionPage {
-
   public currencies;
 
   public transaction: {
-    currency: string,
-    date: string,
-    fee: number,
-    quantity: number,
-    symbol: string,
-    type: string,
-    unitPrice: number
+    currency: string;
+    date: string;
+    fee: number;
+    quantity: number;
+    symbol: string;
+    type: string;
+    unitPrice: number;
   };
 
   public symbols;
 
-  public transactionTypes = [
-    'BUY',
-    'SELL'
-  ];
+  public transactionTypes = ['BUY', 'SELL'];
 
   private unsubscribeSubject: Subject<void> = new Subject<void>();
 
@@ -42,8 +43,7 @@ export class CreateTransactionPage {
     public transactionsService: TransactionsServiceProvider
   ) {
     this.currencies = settingsService.getCurrencies();
-    this.api.getSymbols()
-    .subscribe((aSymbols) => {
+    this.api.getSymbols().subscribe((aSymbols) => {
       this.symbols = aSymbols;
     });
     this.transaction = {
@@ -64,8 +64,7 @@ export class CreateTransactionPage {
 
     loading.present();
 
-    this.transactionsService.post(this.transaction)
-    .then((data) => {
+    this.transactionsService.post(this.transaction).then((data) => {
       loading.dismiss();
 
       this.navParams.get('parentPage').loadTransactions(true);
@@ -81,5 +80,4 @@ export class CreateTransactionPage {
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
-
 }

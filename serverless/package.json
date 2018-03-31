@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "./node_modules/.bin/sls deploy",
-    "prettier": "prettier --config .prettierrc --write '**/*.ts'",
+    "prettier": "prettier --config ../.prettierrc --write '**/*.ts'",
     "serve": "./node_modules/.bin/sls offline start --port 3001"
   },
   "author": "Thomas Kaul",

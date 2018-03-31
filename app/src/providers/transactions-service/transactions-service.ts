@@ -29,8 +29,9 @@ export class TransactionsServiceProvider {
     options.headers = this.api.getHeaders();
 
     return new Promise((resolve) => {
-      this.http.delete(`${this.backendUri}/transactions/${aTransaction.id}`, options)
-        .map(res => res.json())
+      this.http
+        .delete(`${this.backendUri}/transactions/${aTransaction.id}`, options)
+        .map((res) => res.json())
         .subscribe((data) => {
           resolve(data);
         });
@@ -52,9 +53,13 @@ export class TransactionsServiceProvider {
       // then on the response, it'll map the JSON data to a parsed JS object.
       // Next, we process the data and resolve the promise with the new data.
       // this.http.get('https://randomuser.me/api/?results=10')
-      this.http.get(`${this.backendUri}/transactions/${this.settingsService.getUserId()}`, options)
-        .map(res => res.json())
-        .subscribe(data => {
+      this.http
+        .get(
+          `${this.backendUri}/transactions/${this.settingsService.getUserId()}`,
+          options
+        )
+        .map((res) => res.json())
+        .subscribe((data) => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           this.data = data;
@@ -74,13 +79,13 @@ export class TransactionsServiceProvider {
     options.headers = this.api.getHeaders();
 
     return new Promise((resolve) => {
-      this.http.post(`${this.backendUri}/transactions`, transaction, options)
-        .map(res => res.json())
+      this.http
+        .post(`${this.backendUri}/transactions`, transaction, options)
+        .map((res) => res.json())
         .subscribe((data) => {
           this.data = data;
           resolve(this.data);
         });
     });
   }
-
 }

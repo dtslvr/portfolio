@@ -18,7 +18,7 @@ export class MyApp {
     private platform: Platform,
     private settingsService: SettingsServiceProvider,
     private statusBar: StatusBar,
-    private splashScreen: SplashScreen,
+    private splashScreen: SplashScreen
   ) {
     const hasUser = this.settingsService.getUserId() ? true : false;
 
@@ -48,5 +48,4 @@ export class MyApp {
       this.splashScreen.hide();
     });
   }
-
 }

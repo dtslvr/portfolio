@@ -10,7 +10,6 @@ import * as store from 'store';
  */
 @Injectable()
 export class Api {
-
   private backendUri: string;
   private subjectSymbols = new BehaviorSubject<any[]>(null);
 
@@ -25,8 +24,9 @@ export class Api {
       this.backendUri = this.config.backendUri;
     }
 
-    this.http.get(`${this.backendUri}/symbols`)
-      .map(res => res.json())
+    this.http
+      .get(`${this.backendUri}/symbols`)
+      .map((res) => res.json())
       .subscribe((symbols) => {
         this.subjectSymbols.next(symbols);
       });
@@ -45,9 +45,13 @@ export class Api {
       // We're using Angular HTTP provider to request the data,
       // then on the response, it'll map the JSON data to a parsed JS object.
       // Next, we process the data and resolve the promise with the new data.
-      this.http.get(`${this.backendUri}/chart/${this.settingsService.getUserId()}`, options)
-        .map(res => res.json())
-        .subscribe(data => {
+      this.http
+        .get(
+          `${this.backendUri}/chart/${this.settingsService.getUserId()}`,
+          options
+        )
+        .map((res) => res.json())
+        .subscribe((data) => {
           // we've got back the raw data, now generate the core schedule data
           // and save the data for later reference
           resolve(data);
@@ -56,7 +60,7 @@ export class Api {
   }
 
   public getHeaders() {
-    let headers = new Headers();
+    const headers = new Headers();
     headers.append('Currency', store.get('currency'));
     headers.append('User-Id', this.settingsService.getUserId());
 
@@ -66,5 +70,4 @@ export class Api {
   public getSymbols() {
     return this.subjectSymbols.asObservable();
   }
-
 }

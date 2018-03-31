@@ -8,12 +8,9 @@ import { TransactionsPage } from '../transactions/transactions';
   templateUrl: 'tabs.html'
 })
 export class TabsPage {
-
   tab1Root = PerformancePage;
   tab2Root = PortfolioPage;
   tab3Root = TransactionsPage;
 
-  constructor() {
-
-  }
+  constructor() {}
 }

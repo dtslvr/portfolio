@@ -11,7 +11,6 @@ import * as store from 'store';
   templateUrl: 'navbar-menu.html'
 })
 export class NavbarMenu {
-
   public userId: string;
   public version: string;
 
@@ -49,5 +48,4 @@ export class NavbarMenu {
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
-
 }

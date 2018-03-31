@@ -4,7 +4,6 @@ import * as store from 'store';
 
 @Injectable()
 export class SettingsServiceProvider {
-
   private chartDateRange: string;
   private currency: string;
   private isRedactedMode: boolean;
@@ -19,20 +18,11 @@ export class SettingsServiceProvider {
   }
 
   public getChartDateRanges() {
-    return [
-      'YTD',
-      '1Y',
-      '5Y',
-      'MAX'
-    ];
+    return ['YTD', '1Y', '5Y', 'MAX'];
   }
 
   public getCurrencies() {
-    return [
-      'CHF',
-      'EUR',
-      'USD'
-    ];
+    return ['CHF', 'EUR', 'USD'];
   }
 
   public getChartDateRange() {
@@ -82,5 +72,4 @@ export class SettingsServiceProvider {
     this.isRedactedMode = store.get('isRedactedMode');
     this.subjectIsRedactedMode.next(this.isRedactedMode);
   }
-
 }

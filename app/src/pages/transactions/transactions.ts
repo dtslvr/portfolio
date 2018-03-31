@@ -1,8 +1,12 @@
 import { Component } from '@angular/core';
 import { CreateTransactionPage } from './create-transaction/create-transaction';
-import { LoadingController, NavController, PopoverController } from 'ionic-angular';
+import {
+  LoadingController,
+  NavController,
+  PopoverController
+} from 'ionic-angular';
 import * as moment from 'moment';
-import { NavbarMenu } from '../../components/navbar-menu/navbar-menu'
+import { NavbarMenu } from '../../components/navbar-menu/navbar-menu';
 import { SettingsServiceProvider } from '../../providers/settings-service/settings-service';
 import { TransactionsServiceProvider } from '../../providers/transactions-service/transactions-service';
 import { Subject } from 'rxjs/Rx';
@@ -12,7 +16,6 @@ import { Subject } from 'rxjs/Rx';
   templateUrl: './transactions.html'
 })
 export class TransactionsPage {
-
   public allTransactions: any[];
   public baseCurrencySymbol: string;
   public isRedactedMode: boolean;
@@ -32,24 +35,25 @@ export class TransactionsPage {
     public settingsService: SettingsServiceProvider,
     public transactionsService: TransactionsServiceProvider
   ) {
-    this.settingsService.getIsRedactedMode()
-    .takeUntil(this.unsubscribeSubject.asObservable())
-    .subscribe((isRedactedMode) => {
-      this.isRedactedMode = isRedactedMode;
-    });
+    this.settingsService
+      .getIsRedactedMode()
+      .takeUntil(this.unsubscribeSubject.asObservable())
+      .subscribe((isRedactedMode) => {
+        this.isRedactedMode = isRedactedMode;
+      });
 
     this.loadTransactions(true);
     this.userId = this.settingsService.getUserId();
-
   }
 
   private calculateTotalBuy() {
     this.totalBuy = 0;
     this.visibleTransactions.forEach((transactionGroup) => {
-      transactionGroup.filter((transaction) => transaction.type === 'BUY')
-      .forEach((transaction) => {
-        this.totalBuy += transaction.baseCurrency.total;
-      });
+      transactionGroup
+        .filter((transaction) => transaction.type === 'BUY')
+        .forEach((transaction) => {
+          this.totalBuy += transaction.baseCurrency.total;
+        });
     });
   }
 
@@ -58,7 +62,7 @@ export class TransactionsPage {
     this.visibleTransactions.forEach((transactionGroup) => {
       transactionGroup.forEach((transaction) => {
         this.totalFee += transaction.baseCurrency.fee;
-        this.baseCurrencySymbol = transaction.baseCurrency.currencySymbol
+        this.baseCurrencySymbol = transaction.baseCurrency.currencySymbol;
       });
     });
   }
@@ -66,40 +70,48 @@ export class TransactionsPage {
   private calculateTotalSell() {
     this.totalSell = 0;
     this.visibleTransactions.forEach((transactionGroup) => {
-      transactionGroup.filter((transaction) => transaction.type === 'SELL')
-      .forEach((transaction) => {
-        this.totalSell += transaction.baseCurrency.total;
-      });
+      transactionGroup
+        .filter((transaction) => transaction.type === 'SELL')
+        .forEach((transaction) => {
+          this.totalSell += transaction.baseCurrency.total;
+        });
     });
   }
 
   private calculateTotalTransactions() {
     this.totalTransactions = 0;
     this.visibleTransactions.forEach((transactionGroup) => {
-      transactionGroup.filter((transaction) => transaction.type === 'BUY'
-        || transaction.type === 'SELL')
-      .forEach((transaction) => {
-        this.totalTransactions += 1;
-      });
+      transactionGroup
+        .filter(
+          (transaction) =>
+            transaction.type === 'BUY' || transaction.type === 'SELL'
+        )
+        .forEach((transaction) => {
+          this.totalTransactions += 1;
+        });
     });
   }
 
   public goToCreateTransactionPage() {
-    this.navCtrl.push(CreateTransactionPage, { 'parentPage': this });
+    this.navCtrl.push(CreateTransactionPage, { parentPage: this });
   }
 
   public filterItems(ev: any) {
     const value = ev.target.value;
 
     if (value && value.trim() !== '') {
-      const filteredTransactions = this.allTransactions.filter((transaction) => {
-        try {
-          return transaction.symbol.toLowerCase().includes(value.toLowerCase()) ||
-            transaction.type.toLowerCase().includes(value.toLowerCase())
-        } catch(err) {
-          return false;
+      const filteredTransactions = this.allTransactions.filter(
+        (transaction) => {
+          try {
+            return (
+              transaction.symbol.toLowerCase().includes(value.toLowerCase()) ||
+              transaction.type.toLowerCase().includes(value.toLowerCase())
+            );
+          } catch (err) {
+            return false;
+          }
         }
-      });
+      );
 
       this.setTransactions(this.groupTransactions(filteredTransactions));
     } else {
@@ -122,7 +134,7 @@ export class TransactionsPage {
 
       if (currentDay !== transaction.day) {
         groupedTransactions.push([transaction]);
-        currentIndex++;
+        currentIndex += 1;
       } else {
         groupedTransactions[currentIndex].push(transaction);
       }
@@ -138,14 +150,13 @@ export class TransactionsPage {
   }
 
   private loadTransactions(isForced = false) {
-    let loading = this.loadingCtrl.create({
+    const loading = this.loadingCtrl.create({
       cssClass: 'clear'
     });
 
     loading.present();
 
-    this.transactionsService.load(isForced)
-    .then((data) => {
+    this.transactionsService.load(isForced).then((data) => {
       this.allTransactions = data;
 
       this.setTransactions(this.groupTransactions(this.allTransactions));
@@ -155,14 +166,13 @@ export class TransactionsPage {
   }
 
   public removeTransaction(aTransaction) {
-    let loading = this.loadingCtrl.create({
+    const loading = this.loadingCtrl.create({
       cssClass: 'clear'
     });
 
     loading.present();
 
-    this.transactionsService.delete(aTransaction)
-    .then((data) => {
+    this.transactionsService.delete(aTransaction).then((data) => {
       loading.dismiss();
 
       this.loadTransactions(true);
@@ -195,5 +205,4 @@ export class TransactionsPage {
     this.unsubscribeSubject.next();
     this.unsubscribeSubject.complete();
   }
-
 }

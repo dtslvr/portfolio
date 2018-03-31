@@ -5,10 +5,9 @@ import { TabsPage } from '../tabs/tabs';
 
 @Component({
   selector: 'page-landing',
-  templateUrl: 'landing.html',
+  templateUrl: 'landing.html'
 })
 export class LandingPage {
-
   public account: { userId: string } = {
     userId: ''
   };
@@ -16,12 +15,10 @@ export class LandingPage {
   constructor(
     private navCtrl: NavController,
     private settingsService: SettingsServiceProvider
-  ) {
-  }
+  ) {}
 
   public doSignup() {
     this.settingsService.setUserId(this.account.userId);
     this.navCtrl.setRoot(TabsPage);
   }
-
 }

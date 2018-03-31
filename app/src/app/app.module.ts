@@ -77,7 +77,7 @@ registerLocaleData(localeDeCh);
     },
     PortfolioServiceProvider,
     SettingsServiceProvider,
-    TransactionsServiceProvider,
+    TransactionsServiceProvider
   ]
 })
 export class AppModule {}

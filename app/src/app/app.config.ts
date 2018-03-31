@@ -3,7 +3,7 @@ import { InjectionToken } from '@angular/core';
 export let APP_CONFIG = new InjectionToken('app.config');
 
 export interface IAppConfig {
-  backendUri: string,
+  backendUri: string;
   develMode: boolean;
   version: string;
 }
