@@ -107,8 +107,8 @@ export async function getChart(event, context, callback) {
         statusCode: 200,
         body: JSON.stringify({
           currentPortfolio,
-          id: event.pathParameters.id,
-          error
+          error,
+          id: event.pathParameters.id
         }),
         headers: helper.getCORSHeaders()
       };

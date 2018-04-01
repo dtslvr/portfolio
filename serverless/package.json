@@ -1,6 +1,6 @@
 {
   "name": "portfolio",
-  "version": "1.6.10",
+  "version": "1.6.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,12 +12,12 @@
   "devDependencies": {
     "@types/node": "8.0.24",
     "aws-sdk": "2.188.0",
-    "prettier": "1.10.2",
+    "prettier": "1.11.1",
     "serverless": "1.26.1",
     "serverless-offline": "3.18.0",
     "serverless-plugin-typescript": "1.1.0",
-    "tslint": "4.5.1",
-    "tslint-config-airbnb": "1.1.1"
+    "tslint": "5.9.1",
+    "tslint-config-airbnb": "5.8.0"
   },
   "dependencies": {
     "lodash": "4.17.4",

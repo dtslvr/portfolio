@@ -107,7 +107,7 @@ export class PerformancePage {
       '2d'
     );
 
-    const gradientBackground = lineChart.createLinearGradient(0, 0, 0, 200);
+    const gradientBackground = lineChart.createLinearGradient(0, 0, 0, 100);
     gradientBackground.addColorStop(0, 'rgba(72, 138, 255, 0.7)');
     gradientBackground.addColorStop(1, 'rgba(72, 138, 255, 0)');
 
@@ -117,7 +117,8 @@ export class PerformancePage {
       screen.width,
       0
     );
-    gradientStroke.addColorStop(0, 'rgba(72, 138, 255, 0.5)');
+    gradientStroke.addColorStop(0, 'rgba(72, 138, 255, 0.0)');
+    gradientStroke.addColorStop(0.25, 'rgba(72, 138, 255, 0.75)');
     gradientStroke.addColorStop(1, 'rgba(72, 138, 255, 1)');
 
     new Chart(this.lineCanvasPerformanceSeries.nativeElement, {
@@ -144,19 +145,12 @@ export class PerformancePage {
         legend: {
           display: false
         },
+        maintainAspectRatio: false,
+        responsive: true,
         scales: {
           xAxes: [
             {
-              display: true,
-              gridLines: {
-                color: 'rgba(0, 0, 0, 0.075)',
-                display: true,
-                drawBorder: false
-              },
-              ticks: {
-                fontColor: 'rgba(0, 0, 0, 0.15)',
-                fontSize: 10
-              },
+              display: false,
               position: 'top',
               type: 'time',
               time: {
