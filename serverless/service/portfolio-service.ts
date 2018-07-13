@@ -57,7 +57,9 @@ class PortfolioService {
         currency: result[key].price.currency,
         currencySymbol: result[key].price.currencySymbol,
         exchangeName: result[key].price.exchangeName,
-        industry: result[key].summaryProfile.industry || 'Unknown',
+        industry:
+          (result[key].summaryProfile && result[key].summaryProfile.industry) ||
+          'Unknown',
         marketState: result[key].price.marketState,
         name: result[key].price.longName || result[key].price.shortName,
         portfolioShareAcquisition:
@@ -91,7 +93,9 @@ class PortfolioService {
           })
         },
         quantity: portfolio[key].quantity,
-        sector: result[key].summaryProfile.sector || 'Unknown',
+        sector:
+          (result[key].summaryProfile && result[key].summaryProfile.sector) ||
+          'Unknown',
         symbol: key,
         type:
           helper.capitalizeFirstLetter(result[key].price.quoteType) || 'Unknown'

@@ -76,9 +76,9 @@ export async function getChart(event, context, callback) {
     return callback(null, {
       statusCode: error.statusCode,
       headers: helper.getCORSHeaders(),
-      body: JSON.stringify({
+      body: {
         message: error.message
-      })
+      }
     });
   }
 
@@ -163,7 +163,7 @@ export async function getPortfolio(event, context, callback) {
               statusCode: 500,
               headers: helper.getCORSHeaders(),
               body: {
-                message: error
+                message: error.message
               }
             });
           });
@@ -176,7 +176,7 @@ export async function getPortfolio(event, context, callback) {
         statusCode: 500,
         headers: helper.getCORSHeaders(),
         body: {
-          message: error
+          message: error.message
         }
       });
     });
@@ -215,7 +215,7 @@ export async function getTransactions(event, context, callback) {
         statusCode: 500,
         headers: helper.getCORSHeaders(),
         body: {
-          message: error
+          message: error.message
         }
       });
     });
