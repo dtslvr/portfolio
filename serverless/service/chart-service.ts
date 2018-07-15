@@ -62,7 +62,7 @@ class ChartService {
         } else {
           let priceClose = 0;
 
-          for (let i = 1; i < 10; i++) {
+          for (let i = 1; i < 10; i += 1) {
             // Go back (decrementally) to find an earlier price and fill gaps of weekends
             const tempTimestamp = moment(timestamp, 'YYYYMMDD')
               .subtract(i, 'days')
@@ -88,7 +88,7 @@ class ChartService {
             // TODO
             // console.warn(`Warning: ${timestamp} price missing for ${symbol} (using average price)`);
             price += 0;
-            missingPriceCount++;
+            missingPriceCount += 1;
           }
         }
       }

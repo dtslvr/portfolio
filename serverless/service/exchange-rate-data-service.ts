@@ -45,9 +45,9 @@ class ExchangeRateDataService {
     if (currency === this.baseCurrency) {
       // base currency has rate 1:1
       return 1;
-    } else {
-      return this.currencies[currency + this.baseCurrency];
     }
+
+    return this.currencies[currency + this.baseCurrency];
   }
 
   public getBaseCurrency() {

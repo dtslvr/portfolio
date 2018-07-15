@@ -7,9 +7,9 @@ class Helper {
       return aString;
     } else if (aString) {
       return aString.charAt(0).toUpperCase() + aString.slice(1).toLowerCase();
-    } else {
-      return null;
     }
+
+    return null;
   }
 
   public getCORSHeaders() {
