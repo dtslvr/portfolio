@@ -2,5 +2,5 @@
 
 ## Serverless Commands
 
-* Start offline server `npm run serve`
-* Deploy with `npm run deploy`
+* Start offline server `yarn serve`
+* Deploy with `yarn deploy`

@@ -3,7 +3,7 @@
   "version": "1.6.2",
   "author": "Thomas Kaul",
   "homepage": "http://www.dotsilver.ch",
-  "private": true,
+  "license": "MIT",
   "scripts": {
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
@@ -61,8 +61,6 @@
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {}
     },
-    "platforms": [
-      "android"
-    ]
+    "platforms": ["android"]
   }
 }
