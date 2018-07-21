@@ -13,7 +13,7 @@ import * as yahooFinance from 'yahoo-finance';
 export async function deleteTransaction(event, context, callback) {
   // make headers lowercase
   event.headers = transform(event.headers, (result, val, key) => {
-    result[key.toLowerCase()] = val;
+    result[key.toString().toLowerCase()] = val;
   });
 
   return callback(
@@ -29,7 +29,7 @@ export async function getChart(event, context, callback) {
   // make headers lowercase
   const headers = Object.keys(event.headers);
   event.headers = transform(event.headers, (result, val, key) => {
-    result[key.toLowerCase()] = val;
+    result[key.toString().toLowerCase()] = val;
   });
 
   const NUMBER_OF_DATAPOINTS = 200;
@@ -120,7 +120,7 @@ export async function getPortfolio(event, context, callback) {
   // make headers lowercase
   const headers = Object.keys(event.headers);
   event.headers = transform(event.headers, (result, val, key) => {
-    result[key.toLowerCase()] = val;
+    result[key.toString().toLowerCase()] = val;
   });
 
   exchangeRateDataService
@@ -199,7 +199,7 @@ export async function getSymbols(event, context, callback) {
 export async function getTransactions(event, context, callback) {
   // make headers lowercase
   event.headers = transform(event.headers, (result, val, key) => {
-    result[key.toLowerCase()] = val;
+    result[key.toString().toLowerCase()] = val;
   });
 
   exchangeRateDataService
@@ -224,7 +224,7 @@ export async function getTransactions(event, context, callback) {
 export async function postTransaction(event, context, callback) {
   // make headers lowercase
   event.headers = transform(event.headers, (result, val, key) => {
-    result[key.toLowerCase()] = val;
+    result[key.toString().toLowerCase()] = val;
   });
 
   return callback(

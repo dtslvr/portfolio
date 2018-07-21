@@ -1,16 +1,11 @@
 import { awsManager } from './aws-manager';
 import { config } from '../config/config';
 import { helper } from './helper';
-import { coinbaseImporter } from './importer/coinbase/coinbase-importer';
-import { concat, last, reject as rejectArray, sortBy } from 'lodash';
-import * as moment from 'moment';
-import * as Papa from 'papaparse';
-import * as path from 'path';
-import { postfinanceImporter } from './importer/postfinance/postfinance-importer';
-import { Transaction } from '../type/transaction';
-import { TransactionType } from '../type/transaction-type';
+import { sortBy } from 'lodash';
 
 class SymbolService {
+  private symbols: any[];
+
   public async loadSymbols() {
     return {
       statusCode: 200,
@@ -19,8 +14,13 @@ class SymbolService {
     };
   }
 
-  private async getSymbols(): Promise<any[]> {
+  public async getSymbols(): Promise<any[]> {
     return new Promise<any[]>(async (resolve, reject) => {
+      if (this.symbols) {
+        // already cached, return immediately
+        return resolve(this.symbols);
+      }
+
       const params = {
         Bucket: config.aws.s3Bucket,
         Key: `symbols.json`
@@ -34,6 +34,9 @@ class SymbolService {
 
         let symbols = JSON.parse(data.Body.toString('utf8'));
         symbols = sortBy(symbols, ['id']);
+
+        // cache symbols
+        this.symbols = symbols;
 
         resolve(symbols);
       });

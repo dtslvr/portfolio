@@ -10,7 +10,7 @@ export abstract class AbstractImporter {
     });
 
     return Promise.all(promises).then((transactions) => {
-      return flattenDeep(transactions);
+      return <Transaction[]>flattenDeep(transactions);
     });
   }
 

@@ -2,11 +2,11 @@ import { awsManager } from './aws-manager';
 import { config } from '../config/config';
 import { helper } from './helper';
 import { coinbaseImporter } from './importer/coinbase/coinbase-importer';
-import { concat, last, reject as rejectArray, sortBy } from 'lodash';
+import { concat, find, last, reject as rejectArray, sortBy } from 'lodash';
 import * as moment from 'moment';
-import * as Papa from 'papaparse';
 import * as path from 'path';
 import { postfinanceImporter } from './importer/postfinance/postfinance-importer';
+import { symbolService } from './symbol-service';
 import { Transaction } from '../type/transaction';
 import { TransactionType } from '../type/transaction-type';
 
@@ -48,7 +48,7 @@ class TransactionImporter {
           Key: `accounts/${aUserId}/transactions.json`
         };
 
-        awsManager.getS3().putObject(params2, (error, data) => {
+        awsManager.getS3().putObject(params2, (error) => {
           if (error) {
             return reject(error);
           }
@@ -75,7 +75,7 @@ class TransactionImporter {
     let minimumDate = moment().toISOString();
 
     return new Promise<any>(async (resolve, reject) => {
-      let portfolio = {};
+      const portfolio = {};
       let transactions: Transaction[] = [];
       try {
         transactions = await this.loadTransactions(userId);
@@ -158,29 +158,29 @@ class TransactionImporter {
 
       // Remove items with 0 from portfolio
       Object.keys(portfolio).forEach(
-        (key) => portfolio[key].quantity === 0 && delete portfolio[key]
+        (key: string) => portfolio[key].quantity === 0 && delete portfolio[key]
       );
 
-      portfolio = this.convertPortfolioToYahoo(portfolio);
+      this.convertPortfolioToYahoo(portfolio).then((portfolio) => {
+        // calculate averagePrice and total quantity
+        for (const key in portfolio) {
+          let sum = 0;
+          let total = 0;
 
-      // calculate averagePrice and total quantity
-      for (const key in portfolio) {
-        let sum = 0;
-        let total = 0;
+          portfolio[key].quantities.forEach((quantity, index) => {
+            if (quantity > 0) {
+              sum += quantity * portfolio[key].prices[index];
+              total += quantity;
+            }
+          });
 
-        portfolio[key].quantities.forEach((quantity, index) => {
-          if (quantity > 0) {
-            sum += quantity * portfolio[key].prices[index];
-            total += quantity;
-          }
+          portfolio[key].averagePrice = sum / total;
+        }
+
+        resolve({
+          portfolio,
+          startDate: minimumDate
         });
-
-        portfolio[key].averagePrice = sum / total;
-      }
-
-      resolve({
-        portfolio,
-        startDate: minimumDate
       });
     });
   }
@@ -195,36 +195,41 @@ class TransactionImporter {
     };
   }
 
-  private convertPortfolioToYahoo(portfolio): any {
-    const portfolioYahoo = {};
-    const yahooSymbol = {
-      '8GC': '8GC.F', // '8GC.DE'
-      BABA: 'BABA',
-      'CSSMIM.SW': 'CSSMIM.SW',
-      GALN: 'GALN.VX',
-      NNN1: 'NNN1.F',
-      NOVC: 'NOVA.DE',
-      QCOM: 'QCOM',
-      VIFN: 'VIFN.VX',
-      VOW3: 'VOW3.DE',
-      ZGLD: 'ZGLD.SW'
-    };
+  private convertPortfolioToYahoo(portfolio): Promise<any> {
+    return new Promise<any>(async (resolve) => {
+      symbolService.getSymbols().then((symbols: any) => {
+        const portfolioYahoo = {};
+        const yahooSymbol = {
+          '8GC': '8GC.F', // '8GC.DE'
+          GALN: 'GALN.VX',
+          NNN1: 'NNN1.F',
+          NOVC: 'NOVA.DE',
+          VIFN: 'VIFN.VX',
+          VOW3: 'VOW3.DE',
+          ZGLD: 'ZGLD.SW'
+        };
 
-    for (const key in portfolio) {
-      if (yahooSymbol[key]) {
-        portfolioYahoo[yahooSymbol[key]] = portfolio[key];
-      } else {
-        // add currency for cryptocurrencies
-        portfolioYahoo[`${key}-USD`] = portfolio[key];
-      }
-    }
+        for (const key in portfolio) {
+          if (find(symbols, { id: key })) {
+            // add currency for cryptocurrencies
+            portfolioYahoo[`${key}-USD`] = portfolio[key];
+          } else if (yahooSymbol[key]) {
+            // Map yahoo symbols
+            portfolioYahoo[yahooSymbol[key]] = portfolio[key];
+          } else {
+            // No mapping needed
+            portfolioYahoo[key] = portfolio[key];
+          }
+        }
 
-    return portfolioYahoo;
+        resolve(portfolioYahoo);
+      });
+    });
   }
 
   // TODO: use for importing transactions from differnet platforms
   private async importTransactions(): Promise<Transaction[]> {
-    return new Promise<Transaction[]>(async (resolve, reject) => {
+    return new Promise<Transaction[]>(async (resolve) => {
       const filePathsPostfinance: string[] = [];
       const filePathsCoinbase: string[] = [];
       let transactions: Transaction[] = [];
@@ -281,7 +286,7 @@ class TransactionImporter {
                 .putObject(params)
                 .promise();
               putObjectPromise
-                .then((data) => {
+                .then(() => {
                   return resolve([]);
                 })
                 .catch((error) => {
@@ -354,7 +359,7 @@ class TransactionImporter {
           Key: `accounts/${aUserId}/transactions.json`
         };
 
-        awsManager.getS3().putObject(params2, (error, data) => {
+        awsManager.getS3().putObject(params2, (error) => {
           if (error) {
             return reject(error);
           }
