@@ -63,10 +63,9 @@ class PortfolioService {
         marketState: result[key].price.marketState,
         name: result[key].price.longName || result[key].price.shortName,
         portfolioShareAcquisition:
-          portfolio[key].quantity * portfolio[key].averagePrice / volumeStart,
+          (portfolio[key].quantity * portfolio[key].averagePrice) / volumeStart,
         portfolioShareToday:
-          portfolio[key].quantity *
-          result[key].price.regularMarketPrice /
+          (portfolio[key].quantity * result[key].price.regularMarketPrice) /
           volumeToday,
         price: {
           allTime: {

@@ -204,7 +204,7 @@ class TransactionImporter {
           GALN: 'GALN.VX',
           NNN1: 'NNN1.F',
           NOVC: 'NOVA.DE',
-          VIFN: 'VIFN.VX',
+          VIFN: 'VIFN.SW',
           VOW3: 'VOW3.DE',
           ZGLD: 'ZGLD.SW'
         };
@@ -227,7 +227,7 @@ class TransactionImporter {
     });
   }
 
-  // TODO: use for importing transactions from differnet platforms
+  // TODO: use for importing transactions from different platforms
   private async importTransactions(): Promise<Transaction[]> {
     return new Promise<Transaction[]>(async (resolve) => {
       const filePathsPostfinance: string[] = [];
