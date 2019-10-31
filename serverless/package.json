@@ -23,7 +23,7 @@
     "tslint-config-airbnb": "5.11.1"
   },
   "dependencies": {
-    "lodash": "4.17.11",
+    "lodash": "4.17.13",
     "moment": "2.24.0",
     "papaparse": "4.3.3",
     "path": "0.12.7",
