@@ -1,12 +1,14 @@
 {
   "name": "portfolioApp",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "author": "Thomas Kaul",
   "homepage": "http://www.dotsilver.ch",
   "license": "MIT",
   "scripts": {
     "clean": "ionic-app-scripts clean",
     "build": "ionic-app-scripts build",
+    "deploy": "yarn build --prod && yarn firebase deploy",
+    "firebase": "firebase",
     "lint": "ionic-app-scripts lint",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
@@ -45,6 +47,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.1.7",
+    "firebase-tools": "6.2.2",
     "ionic": "3.20.0",
     "prettier": "1.11.1",
     "tslint": "5.9.1",
