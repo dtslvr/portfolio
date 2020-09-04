@@ -25,7 +25,7 @@
   "dependencies": {
     "lodash": "4.17.11",
     "moment": "2.24.0",
-    "papaparse": "4.3.3",
+    "papaparse": "5.2.0",
     "path": "0.12.7",
     "uuid": "3.3.2",
     "yahoo-finance": "0.3.6"
