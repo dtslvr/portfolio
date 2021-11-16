@@ -14,7 +14,7 @@
   "devDependencies": {
     "@types/lodash": "4.14.134",
     "@types/node": "8.0.24",
-    "aws-sdk": "2.188.0",
+    "aws-sdk": "2.814.0",
     "prettier": "1.18.2",
     "serverless": "1.29.2",
     "serverless-offline": "3.25.4",
